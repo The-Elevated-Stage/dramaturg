@@ -163,7 +163,7 @@ For each substantive inconsistency:
 
 ### Circuit Breaker
 
-<mandatory>If reconciliation routes to Review Loop more than twice (i.e., the same design keeps generating substantive inconsistencies after re-approval), the underlying design has a structural tension that reconciliation-level fixes cannot resolve. Present the tension to the user explicitly: "These sections keep conflicting because [root cause]. Rather than continuing to patch, should we revisit [the underlying design question]?" Route to the Approach Loop for the conflicting topic if the user agrees.</mandatory>
+<mandatory>If reconciliation routes to Review Loop more than twice (i.e., the same design keeps generating substantive inconsistencies after re-approval), the underlying design has a structural tension that reconciliation-level fixes cannot resolve. Present the tension to the user explicitly: "These sections keep conflicting because [root cause]. Rather than continuing to patch, should we revisit [the underlying design question]?" Route to Phase Registry → Approach Loop for the conflicting topic if the user agrees.</mandatory>
 </core>
 
 <mandatory>
