@@ -96,7 +96,7 @@ Journal writes happen at:
 <core>
 ## Lifecycle Rules
 
-<mandatory>If a journal file already exists at the target path (from a previous session or concurrent work), archive or rename it before beginning a new session's journal.</mandatory>
+<mandatory>If a journal file already exists at the target path (from a previous session or concurrent work), append to it — do not overwrite or move it. The journal is cumulative across sessions.</mandatory>
 
 <mandatory>The journal is append-only. Entries are never edited. If a later decision supersedes an earlier one, the new entry references the old one.</mandatory>
 

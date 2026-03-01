@@ -30,7 +30,7 @@ tier: 3
 - One section at a time during review — never present multiple design sections in a single message
 - All loop-backs between phases route through the Phase Registry — reference files name the target phase, you find it here before proceeding
 - Research diversions route through §research-protocol with direct return to recorded step — no Phase Registry re-bootstrap needed
-- Decision journal entries must be written at every checkpoint trigger — the journal is append-only, located at `docs/plans/designs/YYYY-MM-DD-<topic>-dramaturg-journal.md`
+- Decision journal entries must be written at every checkpoint trigger — the journal is append-only, located at `docs/plans/designs/decisions/<topic>/dramaturg-journal.md`
 - Research diversion entries must be written to the decision journal before every research diversion and updated to "settled" after return
 - Reference files: focus on the section relevant to your current phase. Other sections provide context but are not your current concern.
 - Scope protection: when users push for implementation details (file paths, function signatures, variable names, package versions), redirect to architecture-level language. Implementation details are the Arranger's concern.
@@ -61,7 +61,7 @@ You produce a design document that the Arranger consumes to create an executable
 
 Two artifacts:
 1. **Design document** — `docs/plans/designs/YYYY-MM-DD-<topic>-design.md`. Open-ended narrative capturing the design vision. Required elements: Goals section (opening) and Arranger Notes appendix (closing). The Arranger Notes appendix is part of the design document, not a separate artifact.
-2. **Decision journal** — `docs/plans/designs/YYYY-MM-DD-<topic>-dramaturg-journal.md`. Structured decision trail consumed by downstream skills. Append-only. See §decision-journal.
+2. **Decision journal** — `docs/plans/designs/decisions/<topic>/dramaturg-journal.md`. Structured decision trail consumed by downstream skills. Append-only. See §decision-journal.
 </core>
 
 <context>
@@ -209,10 +209,10 @@ Read §reconciliation only. Severity classification, implementation readiness te
 **Role:** Compile all reconciled sections into a single design document at `docs/plans/designs/YYYY-MM-DD-<topic>-design.md`.
 
 <reference path="references/support-phases.md" load="required">
-Read §final-design-doc only. Goals section guidance, Arranger Notes template, journal archival.
+Read §final-design-doc only. Goals section guidance, Arranger Notes template, journal completeness verification.
 </reference>
 
-After the design document is finalized and the journal is archived, inform the user: "The design is complete. When you're ready, invoke the Arranger to create an implementation plan from this design."
+After the design document is finalized, inform the user: "The design is complete. When you're ready, invoke the Arranger to create an implementation plan: `/arranger docs/plans/designs/YYYY-MM-DD-<topic>-design.md`"
 </core>
 </section>
 
@@ -236,7 +236,9 @@ Trigger rules, diversion flow, tool selection, journal anchoring, conflict resol
 
 The decision journal is your progressive external memory — capturing decisions, research findings, and vision context as the session progresses.
 
-**Location:** `docs/plans/designs/YYYY-MM-DD-<topic>-dramaturg-journal.md`
+**Location:** `docs/plans/designs/decisions/<topic>/dramaturg-journal.md`
+
+The `<topic>` matches the design doc filename with date prefix and `-design` suffix stripped. Example: design doc `2026-03-01-background-sync-design.md` → topic `background-sync` → journal at `docs/plans/designs/decisions/background-sync/dramaturg-journal.md`. Create the `decisions/<topic>/` directory when writing the first journal entry.
 
 <mandatory>The journal is append-only. Entries are never edited. Write journal entries at every checkpoint trigger — skipping journal entries is a task failure.</mandatory>
 

@@ -85,6 +85,9 @@ When discussing findings, some details sit in a gray zone between design and imp
 - "Use a REAL column named lat" — implementation. The Arranger decides column types and names.
 - "Use SQLite or PostgreSQL?" — architecture. This shapes the design.
 - "Use WAL mode?" — gray zone, but include it if the design's reliability requirements depend on it.
+- "Does FCM support this delivery pattern?" — technology feasibility. In-scope — this shapes whether the design is viable.
+
+The distinction: technology feasibility questions that shape the design are in-scope. Codebase-specific implementation details (file paths, function signatures, exact config values) are out-of-scope.
 
 When uncertain, err toward including it. The Arranger can abstract back up more easily than it can infer missing design intent.
 

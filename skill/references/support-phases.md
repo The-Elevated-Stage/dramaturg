@@ -261,11 +261,11 @@ The design doc must convert messy conversational input into structured output wh
 </template>
 
 <core>
-### Journal Archival
+### Journal Completeness Verification
 
-<mandatory>Archive the decision journal from `docs/plans/designs/YYYY-MM-DD-<topic>-dramaturg-journal.md` to `docs/archive/plans/designs/YYYY-MM-DD-<topic>-dramaturg-journal.md` when the design doc is finalized. Create the archive directory if it doesn't exist. The journal is a working artifact, not a deliverable — but it persists in the archive for the Arranger to consume. The design document stays in `docs/plans/designs/`.</mandatory>
+<mandatory>Verify journal completeness before finalizing — confirm every checkpoint trigger produced an entry. The journal must be complete when it reaches the Arranger. Missing entries mean lost decisions.</mandatory>
 
-<mandatory>Verify journal completeness before archival — confirm every checkpoint trigger produced an entry. The journal must be complete when it reaches the Arranger. Missing entries mean lost decisions.</mandatory>
+The journal persists at `docs/plans/designs/decisions/<topic>/dramaturg-journal.md` alongside any future Repetiteur consultation journals. Do not archive or move it — the Arranger and Repetiteur expect the journal at this path.
 </core>
 
 <guidance>
@@ -277,10 +277,9 @@ The design doc captures architecture-level decisions. When writing, resist the p
 <context>
 ### What the Arranger Receives
 
-Three artifacts from the Dramaturg:
-1. **Design document** — goals section + vision, architecture, creative narrative
-2. **Decision journal** — structured decision trail with goal/use-case/decision categorization, verbatim user input, VERIFIED/PARTIAL research flags
-3. **Arranger Notes appendix** — quick-orientation flags for the Arranger's feasibility audit
+Two artifacts from the Dramaturg:
+1. **Design document** — goals section + vision, architecture, creative narrative. Includes the Arranger Notes appendix (new protocols, open questions, key decisions).
+2. **Decision journal** — structured decision trail with goal/use-case/decision categorization, verbatim user input, VERIFIED/PARTIAL/UNRESEARCHED research flags
 </context>
 </section>
 

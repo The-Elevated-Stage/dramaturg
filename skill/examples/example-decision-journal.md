@@ -23,7 +23,7 @@ tier: 3
 
 This example shows each journal entry type the Dramaturg produces. Same scenario as the design document example: task management app, DAG dependency system.
 
-The decision journal lives at `docs/plans/designs/YYYY-MM-DD-<topic>-dramaturg-journal.md` and is consumed by the Arranger alongside the design document. Entries are append-only — never edited after writing.
+The decision journal lives at `docs/plans/designs/decisions/<topic>/dramaturg-journal.md` and is consumed by the Arranger alongside the design document. Entries are append-only — never edited after writing.
 </context>
 </section>
 
