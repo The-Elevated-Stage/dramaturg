@@ -101,9 +101,9 @@ These are the phases of the Dramaturg's workflow. When a reference file says "Pr
 
 ### Context Grounding
 
-**Role:** Understand the current project before discussing what to build on top of it. Quick and focused — "what exists today," not a deep codebase audit.
+**Role:** Understand the current project before discussing what to build on top of it.
 
-**Transition:** Move to Vision Loop when the Dramaturg has enough project context to have an informed conversation. This is a judgment call.
+**Journal checkpoint:** None — Context Grounding does not produce a journal entry.
 
 <reference path="references/support-phases.md" load="required">
 Read §context-grounding only. Explore subagent launch patterns for project understanding.
@@ -113,7 +113,7 @@ Read §context-grounding only. Explore subagent launch patterns for project unde
 
 ### Vision Loop
 
-**Role:** Understand what the user wants, why they want it, and how they'll use it — entirely from the user's own words. This is brainstorming-style dialogue: open-ended, one question at a time, drawing the user out.
+**Role:** Understand what the user wants, why they want it, and how they'll use it — entirely from the user's own words.
 
 <mandatory>Transition gate (strict): Move to Vision Expansion ONLY when the Dramaturg can answer all three of these from user input alone:
 1. **What** does the user want to build?
@@ -121,13 +121,7 @@ Read §context-grounding only. Explore subagent launch patterns for project unde
 3. **How** will they use it? (concrete use cases, user scenarios)
 These answers must come strictly from what the user has said. Do not infer the "why" from project context or fill in use cases from training data. If any answer is missing, keep asking.</mandatory>
 
-<mandatory>One question at a time. Open-ended questions only. Do not present checklists, forms, or multi-question dumps.</mandatory>
-
 **Journal checkpoint:** Write the Vision Baseline entry on exit.
-
-**Loop-back from Review Loop:** If vision regression is detected and confirmed during section review, the Review Loop routes here. Re-establish the vision with updated understanding, then proceed through Vision Expansion and Broad Design Scoping again.
-
-<mandatory>Loop-back to Context Grounding: If the vision discussion reveals unexplored project context (e.g., "this needs to integrate with the notification system" and that area hasn't been explored), loop back to Context Grounding via this registry to explore the relevant area, then return here.</mandatory>
 
 <reference path="references/vision-loop.md" load="required">
 Question strategy, gate verification, research during vision gathering, vision baseline journal template, loop-back conditions.
@@ -137,15 +131,11 @@ Question strategy, gate verification, research during vision gathering, vision b
 
 ### Vision Expansion
 
-**Role:** Proactively enrich the user's vision with capabilities, interactions, edge cases, and cross-feature implications they haven't considered. Shifts from elicitation (Phase 2) to enrichment — the Dramaturg contributes design ideas, not just captures them.
+**Role:** Proactively enrich the user's vision with capabilities, interactions, edge cases, and cross-feature implications they haven't considered.
 
-**Mechanism:** AskUserQuestion for yes/no decisions with context. Brief discussion allowed but bounded — when discussion drifts into architectural detail, table it for Phase 5.
-
-**Transition:** Exit when all enrichment passes complete and the user confirms. Re-verify the Vision Baseline (What/Why/How-used) against expansion results before proceeding — if enrichment materially changed the vision, update the baseline and re-confirm.
+<mandatory>Vision Expansion is mandatory after every Vision Loop pass, including loop-backs from later phases.</mandatory>
 
 **Journal checkpoint:** Write the Vision Expansion entry on exit.
-
-<mandatory>Vision Expansion is mandatory after every Vision Loop pass, including loop-backs from later phases. The vision shift may have created new enrichment opportunities.</mandatory>
 
 <reference path="references/vision-expansion.md" load="required">
 Enrichment sources, three-pass presentation flow, AskUserQuestion pattern, Gemini prompt design, discussion boundary, vision baseline re-verification, journal template.
@@ -155,91 +145,60 @@ Enrichment sources, three-pass presentation flow, AskUserQuestion pattern, Gemin
 
 ### Broad Design Scoping
 
-**Role:** Establish a high-level map of the design territory before diving into detailed per-section work. Frame what topics need exploration, not explore them.
+**Role:** Establish a high-level map of the design territory before diving into detailed per-section work.
 
-**Constraints:**
-- Max 6 total questions across all areas
-- Max 2 questions per area (backend, frontend, data model, etc.)
-- Open-ended questions only — designed to make the user talk, not answer yes/no
-
-**Transition:** Before moving to Approach Loop, explicitly list the topics to explore in Phase 5 (derived from scoping answers) and ask the user to confirm the list is complete. This becomes the Topic Map journal entry.
+<mandatory>Transition gate: Before moving to Approach Loop, explicitly list the topics to explore in Phase 5 and ask the user to confirm the list is complete.</mandatory>
 
 **Journal checkpoint:** Write the Topic Map entry on exit.
 
 <reference path="references/support-phases.md" load="required">
-Read §broad-design-scoping only. Question framing, topic map construction.
+Read §broad-design-scoping only. Question framing, constraints (max 6 questions, max 2 per area), topic map construction.
 </reference>
 
 ---
 
 ### Approach Loop
 
-**Role:** The core of the skill. Explore, research, and settle on the right approach for each major design topic through fluid, research-backed conversation. This is where the big architectural decisions happen, informed by active research.
+**Role:** Explore, research, and settle on the right approach for each major design topic through fluid, research-backed conversation. This is the core of the skill.
 
-This phase is where the Dramaturg spends the most time. A single topic's discussion may last 30-60+ minutes of back-and-forth research and exploration. Thoroughness here is the skill's primary value — never rush or compress this phase.
+<mandatory>Research FIRST, recommend AFTER. Never recommend based solely on training data for substantive technical decisions.</mandatory>
 
-The reference file walks through the topic-by-topic exploration workflow: how topics are selected by dependency order, how research interleaves with discussion through a fluid loop, how each topic reaches explicit settlement, and what happens when research reveals an approach is infeasible. It also covers tangent bounding to prevent aggregate drift, session split evaluation at the Phase 5→6 boundary, and the decision/research journal templates for settled topics.
-
-<mandatory>Research FIRST, recommend AFTER. Never recommend based solely on training data for substantive technical decisions. Apply the priority chain (compatibility > reliability > efficiency > security > performance) when evaluating options.</mandatory>
-
-<mandatory>One question at a time for open-ended exploration. Tight, bounded questions (binary choices, parameter confirmations) may be batched.</mandatory>
-
-**Research triggers:** When research is needed during this phase, follow the research diversion protocol in §research-protocol. Write the journal entry, execute research, return to the recorded step.
+<mandatory>Vision-change detection: If the user's stated goal, scope, or use cases change fundamentally during approach exploration, pause forward progress and confirm with the user. If confirmed, route to Phase Registry → Vision Loop.</mandatory>
 
 **Journal checkpoint:** Write a Decision or Research entry for every settled topic.
 
-<mandatory>Loop-back from Review Loop: If an approach change is detected during section review, the Review Loop routes here for the affected topic. The reference file contains the ripple assessment protocol — identifying whether the new approach affects other settled topics and the procedure for selective invalidation.</mandatory>
-
-Re-entry from Review Loop for ripple assessment starts at §ripple-assessment in approach-loop.md, not §topic-selection.
-
-<mandatory>Vision-change detection: If the user's stated goal, scope, or use cases change fundamentally during approach exploration — scope contraction ("actually I just need X, not Y"), goal shift ("this is really about X, not Y"), or new use cases that invalidate settled topics — pause forward progress, present the observation, and confirm with the user. If confirmed, route to Phase Registry → Vision Loop. The mandatory Vision Expansion pass-through applies on the return path.</mandatory>
-
-**Transition:** Move to Review Loop when all major design topics are settled. The reference file specifies the transition requirements.
-
 <reference path="references/approach-loop.md" load="required">
-Complete topic exploration workflow: topic selection, research-discuss-settle loop, tangent bounding, infeasibility pivots, settlement confirmation, session split evaluation, ripple assessment protocol, decision/research journal templates.
+Topic selection, research-discuss-settle loop, tangent bounding, vision-change detection, infeasibility pivots, settlement confirmation, session split evaluation, ripple assessment protocol, journal templates.
 </reference>
 
 ---
 
 ### Review Loop
 
-**Role:** Present the detailed design as structured sections for focused review. By this point, the approaches are already settled in the Approach Loop — this phase is about the details within those approaches. Feedback here is typically detail-level, not approach-level — but the reference file contains the detection and routing logic for when feedback crosses that boundary.
+**Role:** Present the detailed design as structured sections for focused review.
 
-The reference file describes how to present sections for review, how to classify user feedback into four categories (vision change, approach change, detail change, approval), the three-question vision regression test, detection criteria for approach changes (with routing to the Approach Loop's ripple assessment protocol), the security lens for each section, and the section approval journal templates.
+<mandatory>Present one section at a time. One section per message.</mandatory>
 
-<mandatory>Present one section at a time. One section per message — never present multiple sections in a single reply.</mandatory>
-
-<mandatory>If user feedback during section review constitutes a vision change (alters the answer to What/Why/How-used), route to Phase Registry → Vision Loop. Previously approved sections remain but will be re-evaluated during Reconciliation. The reference file contains the detection criteria and user confirmation protocol.</mandatory>
-
-<mandatory>If user feedback constitutes an approach change (same goal, different technical method), route to Phase Registry → Approach Loop for the affected topic. The reference file contains the ripple assessment protocol for identifying affected sections before invalidation.</mandatory>
+<mandatory>If user feedback constitutes a vision change, route to Phase Registry → Vision Loop. If it constitutes an approach change, route to Phase Registry → Approach Loop.</mandatory>
 
 **Journal checkpoint:** Write a Section Approval entry for every approved section.
 
 <reference path="references/review-loop.md" load="required">
-Complete review workflow: section presentation format, feedback classification table, vision regression three-question test, approach change ripple assessment, section ordering, security lens criteria, section approval journal template.
+Section presentation, feedback classification, vision regression test, approach change detection, security lens, section approval journal template.
 </reference>
 
 ---
 
 ### Reconciliation
 
-**Role:** Ensure all approved sections are internally consistent by following the prescribed workflow in the reference file before compiling the final document. The reference file describes the step-by-step process that has been proven to reliably work.
-
-**Severity classification:**
-
-| Severity | Example | Action |
-|---|---|---|
-| **Cosmetic** | Terminology drift ("device" vs "client") | Fix silently, note in passing |
-| **Clarification** | A section references a detail that a later section made more specific | Update and inform user (no re-approval needed) |
-| **Substantive** | A section's approach conflicts with a later decision | Present conflict, require user re-approval |
-
-**Transition gate — Implementation readiness:** Before moving to Final Design Doc, evaluate: could the Arranger take this design and produce an executable implementation plan without needing to make design-level decisions? If no, identify what's unresolved and keep probing. Consistency does not imply completeness.
+**Role:** Ensure all approved sections are internally consistent before compiling the final document.
 
 <mandatory>If substantive inconsistencies are found, present affected sections for re-approval. Route to Phase Registry → Review Loop if a section needs rework beyond reconciliation-level fixes.</mandatory>
 
+<mandatory>Implementation readiness gate: Before moving to Final Design Doc, evaluate — could the Arranger produce an executable implementation plan from this design without making design-level decisions?</mandatory>
+
 <reference path="references/support-phases.md" load="required">
-Read §reconciliation only. Severity classification details, implementation readiness test.
+Read §reconciliation only. Severity classification, implementation readiness test.
 </reference>
 
 ---
@@ -247,14 +206,6 @@ Read §reconciliation only. Severity classification details, implementation read
 ### Final Design Doc
 
 **Role:** Compile all reconciled sections into a single design document at `docs/plans/designs/YYYY-MM-DD-<topic>-design.md`.
-
-**Required elements:**
-1. **Goals section (opening)** — Verbose, narrative statement of the user's goals. Rich with context. Independent of technical decisions. Every goal the user stated belongs here, including specific behaviors, types, and capabilities they mentioned.
-2. **Arranger Notes appendix (closing)** — Flags for the Arranger: new protocols/unimplemented patterns, open questions, key design decisions.
-
-The rest of the document is intentionally open-ended — whatever best captures the design vision.
-
-**Journal disposition:** Archive the decision journal to `docs/archive/` alongside the design doc. The journal is a working artifact, not a deliverable.
 
 <reference path="references/support-phases.md" load="required">
 Read §final-design-doc only. Goals section guidance, Arranger Notes template, journal archival.
@@ -268,65 +219,13 @@ After the design document is finalized and the journal is archived, inform the u
 <core>
 ## Research Protocol
 
-Research happens when triggered by specific conditions during conversation. It does not happen on a schedule.
+Research happens when triggered by specific conditions during conversation, not on a schedule. The research-protocol reference defines when to research, how to execute the diversion flow, and how to return to the recorded step.
 
-<mandatory>Research diversions use the decision journal for flow anchoring. Write the entry before research, update to "settled" after return. Research diversions return directly to the recorded step — no Phase Registry re-bootstrap.</mandatory>
+<mandatory>Research diversions use the decision journal for flow anchoring. Write the entry before research, update to "settled" after return. Research diversions return directly to the recorded step — no Phase Registry re-bootstrap needed.</mandatory>
 
-### Research Trigger Rules
-
-**When the Dramaturg recommends an approach:** Research FIRST. Validate the approach, THEN present with evidence. <mandatory>Never recommend based solely on training data for substantive technical decisions. Apply the priority chain: compatibility > reliability > efficiency > security > performance.</mandatory>
-
-**When the user proposes something with clear intent:** Research immediately to validate feasibility. The intent is clear — do not slow the conversation by asking "should I research this?"
-
-**When the user proposes something with ambiguous intent:** Clarify first. Fully understand the goal. Confirm understanding. THEN ask "should I research this approach?"
-
-**When a protocol or pattern is not already implemented in the project:** Research through Gemini before incorporating it into the design. Even if the Dramaturg "knows" how something works from training data, validate via current research to catch version-specific gotchas and platform constraints.
-
-**When NOT to research:**
-- Trivial decisions that don't affect architecture
-- Clarification exchanges still establishing intent
-- Details within the project's reliable, existing patterns
-- Minor adjustments to already-researched approaches
-- When the user explicitly declines research — accept their informed judgment, journal as user-directed decision
-
-### Research Diversion Flow
-
-**Step 1 — Record position in the decision journal:**
-
-<template follow="format">
-## Research Diversion (in progress)
-**Position:** [reference-file.md] §[section-id] → [step]
-**Topic:** [what was being discussed] — [context for why research is needed]
-**Trigger:** [user-proposal-clear-intent | dramaturg-recommendation | unimplemented-pattern | user-proposal-ambiguous]
-**Status:** in-progress
-</template>
-
-**Step 2 — Execute research:**
-
-Tool selection (use the best tool for each job):
-1. **Gemini MCP** — Primary for feasibility research, technical questions, approach analysis. Excels at synthesizing tradeoffs and suggesting alternatives.
-2. **Brave-search** — Discovering what exists: new libraries, recent articles, community sentiment.
-3. **Explore subagents** — Codebase understanding, architectural analysis. Use subagents to keep main context clean.
-4. **WebFetch** — Reading specific known URLs.
-5. **General-purpose subagents** — Multi-source synthesis, speculative research. Isolates verbose or speculative exploration from the main conversation context — if the path is a dead end, the main session loses nothing.
-
-Load the research strategy on first research diversion:
-
-<reference path="references/research-strategy.md" load="required">
-Read §tool-hierarchy and §subagent-delegation on first research diversion. Read §conflict-resolution, §inconclusive-research, and §gemini-failure only when encountering conflicting sources, inconclusive results, or Gemini failure mid-session.
+<reference path="references/research-protocol.md" load="required">
+Trigger rules, diversion flow, tool selection, journal anchoring, conflict resolution, Gemini failure handling.
 </reference>
-
-**Research should over-investigate, not under-investigate.** Go deep — check edge cases, discover limitations, find alternatives, form recommendations. Shallow research ("X exists and seems to work") is less valuable than thorough research ("X exists, works for Y, has Z limitation, and A might be better because B").
-
-**Provide explicit recommendations**, not just findings. "Here are three options, and I recommend X because Y" is more useful than "here are three options." <mandatory>Recommendations must follow the priority chain: compatibility > reliability > efficiency > security > performance.</mandatory>
-
-**Gemini alternatives:** Gemini naturally suggests alternatives — this is valuable. Briefly assess each against the current context. Deep-dive only on the ones that look genuinely promising or challenge an assumption. Not all alternatives need full investigation.
-
-**Step 3 — Return to recorded step:**
-
-Read the most recent "Research Diversion (in progress)" entry in the decision journal. Return directly to the recorded position in the reference file. Update the journal entry's status from "in-progress" to "settled" and add a **Findings** field with the research results. Resume the discussion with research findings.
-
-<mandatory>Update the journal entry status after returning. In-progress entries must not accumulate — they indicate either active research or a stale diversion from a session interruption. If a session starts with an existing in-progress research diversion entry, re-execute the research from the recorded context.</mandatory>
 </core>
 </section>
 
@@ -334,73 +233,15 @@ Read the most recent "Research Diversion (in progress)" entry in the decision jo
 <core>
 ## Decision Journal
 
-The decision journal is the Dramaturg's progressive external memory. It captures decisions, research findings, and vision context as the session progresses, ensuring no work is lost to context compaction or session interruption.
+The decision journal is the Dramaturg's progressive external memory — capturing decisions, research findings, and vision context as the session progresses.
 
-**Location:** `docs/plans/designs/YYYY-MM-DD-<topic>-dramaturg-journal.md` (matches the design doc naming pattern)
+**Location:** `docs/plans/designs/YYYY-MM-DD-<topic>-dramaturg-journal.md`
 
-<mandatory>If a journal file already exists at the target path (from a previous session or concurrent work), archive or rename it before beginning a new session's journal.</mandatory>
+<mandatory>The journal is append-only. Entries are never edited. Write journal entries at every checkpoint trigger — skipping journal entries is a task failure.</mandatory>
 
-<mandatory>The journal is append-only. Entries are never edited. If a later decision supersedes an earlier one, the new entry references the old one. Write journal entries at every checkpoint trigger listed in the Phase Registry — skipping journal entries is a task failure.</mandatory>
-
-### Purpose
-
-1. **Context preservation** — Settled decisions survive context compaction. Critical for the Review Loop which needs Approach Loop decisions that may have compacted.
-2. **Session resilience** — If a session dies mid-Approach-Loop, the journal preserves all settled approaches and research findings. A new session reads the journal and picks up where it left off.
-3. **Pipeline handoff** — Research-backed decisions carry forward to the Arranger. Entries marked VERIFIED let the Arranger skip re-verification. Entries marked PARTIAL flag what still needs checking.
-4. **Audit trail** — Shows how the design evolved, not just the final answer.
-
-### Entry Types
-
-Entry templates are placed inline at their checkpoint trigger points across reference files. The two formats:
-
-**User-discussed entries** — settled through conversation:
-- Fields: Phase, Category (goal | use-case | decision), Decided, User verbatim, User context, Alternatives discussed, Status
-- **Category tags matter:** Goals and use cases are inviolable for downstream skills — they represent user intent that survives implementation replanning. Decisions can be reworked.
-- **goal** — What the user wants the feature to accomplish. Be verbose. Capture the full scope including specific behaviors and types.
-- **use-case** — How the user plans to use the feature. Reveals the user's mental model.
-- **decision** — A technical or design choice. Default category.
-
-<mandatory>User input is captured verbatim in the "User verbatim" field — not paraphrased. Downstream skills need the user's actual language to understand intent.</mandatory>
-
-**Research-backed entries** — validated through investigation:
-- Fields: Phase, Question, Tools used, Findings, Decision, Arranger note (VERIFIED | PARTIAL), Status
-- The **Arranger note** enables cross-skill optimization. VERIFIED = Arranger can skip re-audit. PARTIAL = flag what still needs verification. UNRESEARCHED = decision made without research backing (e.g., Gemini was unavailable); Arranger must verify independently.
-
-**Tension entries** — requirements that exist in productive conflict:
-- Fields: Phase, Requirements in tension, Why they conflict, Current resolution approach, Status
-- Tensions are not failures — "offline AND real-time" is solvable but represents a design tension that the Arranger should be aware of
-- Status is "acknowledged" not "settled" — the tension persists even after a resolution approach is chosen
-- The Arranger receives tensions as design context, not as problems to solve
-
-<template follow="format">
-## Tension: [Short description]
-**Phase:** [Phase where tension was identified]
-**Requirements in tension:**
-- [Requirement A]
-- [Requirement B]
-**Why they conflict:** [Brief explanation of the productive conflict]
-**Current resolution approach:** [How the design currently handles the tension, or "unresolved — Arranger decides"]
-**Status:** acknowledged
-</template>
-
-### Special Entries
-
-- **Vision Baseline** (Phase 2 exit) — What/Why/How-used. The regression test anchor.
-- **Vision Expansion** (Phase 3 exit) — Accepted, rejected, and tabled enrichments. Vision Baseline update status.
-- **Topic Map** (Phase 4 exit) — Areas to explore, user-confirmed coverage.
-- **Section Approval** (Phase 6) — Key decisions reflected, feedback incorporated.
-
-Templates for each appear in the relevant reference files at the checkpoint trigger points.
-
-### Checkpoint Triggers
-
-Journal writes happen at:
-- Vision Loop exit: vision baseline entry
-- Vision Expansion exit: vision expansion entry (accepted, rejected, tabled capabilities)
-- Broad Design Scoping exit: topic map entry
-- Every settled topic in Approach Loop (decision or research entry)
-- Every section approval in Review Loop
-- Before discussing results of significant autonomous research — journal first, then discuss
+<reference path="references/decision-journal.md" load="required">
+Entry types, field lists, templates, checkpoint triggers, special entries, lifecycle rules.
+</reference>
 </core>
 </section>
 

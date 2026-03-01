@@ -18,6 +18,8 @@
 <core>
 ## Topic Selection
 
+This is the core of the Dramaturg skill — where the big architectural decisions happen, informed by active research. A single topic's discussion may last 30-60+ minutes of back-and-forth research and exploration. Thoroughness here is the skill's primary value — never rush or compress this phase.
+
 <mandatory>Read the Topic Map journal entry from the decision journal before beginning topic selection. The Topic Map is the authoritative list of topics to explore — do not rely on conversation memory for what was confirmed during Broad Design Scoping.</mandatory>
 
 Pick topics from the Topic Map (established in Phase 4 and journaled) in dependency order. Foundations first — data model before API design, architecture before UI behavior, core mechanics before edge cases.
@@ -60,7 +62,7 @@ Investigate the topic using the research diversion protocol.
 Research depth should be proportional to architectural impact. Foundational decisions (data model, communication protocol, core patterns) deserve exhaustive multi-source investigation. Peripheral decisions (UI preferences, non-critical defaults) need only a quick feasibility check. Over-researching trivial decisions wastes context budget that foundational topics need more.
 </guidance>
 
-When research is needed, follow SKILL.md §research-protocol. Write the journal entry, execute research, return to the recorded step. For simple factual checks, inline Gemini queries suffice. For complex multi-source questions, load `research-strategy.md` per SKILL.md §research-protocol. (This is a reminder of the full protocol in SKILL.md §research-protocol. Follow the full protocol for complex research; this summary covers the common case.)
+When research is needed, follow SKILL.md §research-protocol. Write the journal entry, execute research, return to the recorded step. For simple factual checks, inline Gemini queries suffice. For complex multi-source questions, load `research-protocol.md` per SKILL.md §research-protocol. (This is a reminder of the full protocol in SKILL.md §research-protocol. Follow the full protocol for complex research; this summary covers the common case.)
 
 ### Step c — Discuss Findings
 

@@ -1,6 +1,8 @@
 <skill>
 
 <sections>
+- trigger-rules
+- diversion-flow
 - tool-hierarchy
 - subagent-delegation
 - conflict-resolution
@@ -9,11 +11,76 @@
 </sections>
 
 <!-- Loading guide:
-  - §tool-hierarchy, §subagent-delegation: Load on first research diversion
+  - §trigger-rules, §diversion-flow: Load on first research diversion
+  - §tool-hierarchy, §subagent-delegation: Load on first research execution
   - §conflict-resolution: Load when encountering conflicting sources
   - §inconclusive-research: Load when research returns inconclusive
   - §gemini-failure: Load when Gemini fails mid-session
 -->
+
+<section id="trigger-rules">
+<core>
+## Research Trigger Rules
+
+Research happens when triggered by specific conditions during conversation. It does not happen on a schedule.
+
+**When the Dramaturg recommends an approach:** Research FIRST. Validate the approach, THEN present with evidence. <mandatory>Never recommend based solely on training data for substantive technical decisions. Apply the priority chain: compatibility > reliability > efficiency > security > performance.</mandatory>
+
+**When the user proposes something with clear intent:** Research immediately to validate feasibility. The intent is clear — do not slow the conversation by asking "should I research this?"
+
+**When the user proposes something with ambiguous intent:** Clarify first. Fully understand the goal. Confirm understanding. THEN ask "should I research this approach?"
+
+**When a protocol or pattern is not already implemented in the project:** Research through Gemini before incorporating it into the design. Even if the Dramaturg "knows" how something works from training data, validate via current research to catch version-specific gotchas and platform constraints.
+
+**When NOT to research:**
+- Trivial decisions that don't affect architecture
+- Clarification exchanges still establishing intent
+- Details within the project's reliable, existing patterns
+- Minor adjustments to already-researched approaches
+- When the user explicitly declines research — accept their informed judgment, journal as user-directed decision
+</core>
+</section>
+
+<section id="diversion-flow">
+<core>
+## Research Diversion Flow
+
+<mandatory>Research diversions use the decision journal for flow anchoring. Write the entry before research, update to "settled" after return. Research diversions return directly to the recorded step — no Phase Registry re-bootstrap needed.</mandatory>
+
+**Step 1 — Record position in the decision journal:**
+
+<template follow="format">
+## Research Diversion (in progress)
+**Position:** [reference-file.md] §[section-id] → [step]
+**Topic:** [what was being discussed] — [context for why research is needed]
+**Trigger:** [user-proposal-clear-intent | dramaturg-recommendation | unimplemented-pattern | user-proposal-ambiguous]
+**Status:** in-progress
+</template>
+
+**Step 2 — Execute research:**
+
+Tool selection (use the best tool for each job):
+1. **Gemini MCP** — Primary for feasibility research, technical questions, approach analysis. Excels at synthesizing tradeoffs and suggesting alternatives.
+2. **Brave-search** — Discovering what exists: new libraries, recent articles, community sentiment.
+3. **Explore subagents** — Codebase understanding, architectural analysis. Use subagents to keep main context clean.
+4. **WebFetch** — Reading specific known URLs.
+5. **General-purpose subagents** — Multi-source synthesis, speculative research. Isolates verbose or speculative exploration from the main conversation context — if the path is a dead end, the main session loses nothing.
+
+For detailed tool rationale, subagent delegation patterns, and research depth guidance, see §tool-hierarchy and §subagent-delegation.
+
+**Research should over-investigate, not under-investigate.** Go deep — check edge cases, discover limitations, find alternatives, form recommendations. Shallow research ("X exists and seems to work") is less valuable than thorough research ("X exists, works for Y, has Z limitation, and A might be better because B").
+
+**Provide explicit recommendations**, not just findings. "Here are three options, and I recommend X because Y" is more useful than "here are three options." <mandatory>Recommendations must follow the priority chain: compatibility > reliability > efficiency > security > performance.</mandatory>
+
+**Gemini alternatives:** Gemini naturally suggests alternatives — this is valuable. Briefly assess each against the current context. Deep-dive only on the ones that look genuinely promising or challenge an assumption. Not all alternatives need full investigation.
+
+**Step 3 — Return to recorded step:**
+
+Read the most recent "Research Diversion (in progress)" entry in the decision journal. Return directly to the recorded position in the reference file. Update the journal entry's status from "in-progress" to "settled" and add a **Findings** field with the research results. Resume the discussion with research findings.
+
+<mandatory>Update the journal entry status after returning. In-progress entries must not accumulate — they indicate either active research or a stale diversion from a session interruption. If a session starts with an existing in-progress research diversion entry, re-execute the research from the recorded context.</mandatory>
+</core>
+</section>
 
 <section id="tool-hierarchy">
 <core>

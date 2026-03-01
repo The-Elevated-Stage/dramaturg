@@ -10,6 +10,8 @@
 <core>
 ## Question Strategy
 
+The Vision Loop is brainstorming-style dialogue: open-ended, one question at a time, drawing the user out. The goal is to understand what the user wants, why they want it, and how they'll use it — entirely from the user's own words. The Dramaturg contributes design ideas later (Phase 3); here, it listens.
+
 The Vision Loop draws out What/Why/How-used entirely from the user's own words. Each dimension requires a different questioning approach because users volunteer them differently.
 
 ### Drawing Out "What"
