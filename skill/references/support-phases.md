@@ -7,6 +7,15 @@
 - final-design-doc
 </sections>
 
+<!-- Loading guide:
+     Load the section specified in your Phase Registry entry.
+     Each section is self-contained — no need to read other sections.
+     - §context-grounding: Phase 1 — project exploration
+     - §broad-design-scoping: Phase 4 — high-level framing questions
+     - §reconciliation: Phase 7 — cross-section consistency
+     - §final-design-doc: Phase 8 — compile and output
+-->
+
 <section id="context-grounding">
 <core>
 ## Context Grounding
@@ -38,11 +47,13 @@ Exit when you can describe:
 3. Key integration points the design might touch
 
 Err toward moving on. If the Vision Loop reveals unexplored project context (e.g., "this needs to integrate with the notification system" and that area hasn't been explored), the Phase Registry routes back here. Starting the vision discussion early is better than over-exploring context that may turn out to be irrelevant.
+</guidance>
 
+<mandatory>
 ### Context Pressure Awareness
 
-If context pressure builds during Phase 1, Phase 2, or Phase 3, the Dramaturg may suggest capturing progress: "We've covered a lot of ground — let me write the Vision Baseline now and we can continue refining in the next phase." Early phases (Context Grounding, Vision Loop, Vision Expansion) should not exhaust context budget that Phase 5 (Approach Loop) needs more.
-</guidance>
+If context pressure builds during Phase 1, Phase 2, or Phase 3, you may suggest capturing progress: "We've covered a lot of ground — let me write the Vision Baseline now and we can continue refining in the next phase." Early phases (Context Grounding, Vision Loop, Vision Expansion) should not exhaust context budget that Phase 5 (Approach Loop) needs more.
+</mandatory>
 
 <core>
 ### Exit
@@ -60,7 +71,7 @@ Proceed to Phase Registry → Vision Loop.
 - Open-ended questions only — designed to make the user talk, not answer yes/no or pick from a list
 - One question at a time — do not batch open-ended scoping questions
 
-These limits force high-quality questions. When limited to 2 backend questions, the Dramaturg picks the ones that most shape the design. The cap also respects the user's time — scoping is not the interview.
+These limits force high-quality questions. When limited to 2 backend questions, you pick the ones that most shape the design. The cap also respects the user's time — scoping is not the interview.
 </mandatory>
 
 <core>
@@ -224,7 +235,7 @@ Most design decisions appear naturally as part of the narrative. The decision jo
 
 The design doc must convert messy conversational input into structured output while preserving fidelity. When compiling:
 
-- **Distinguish confirmed decisions from design-level inferences.** Decisions explicitly settled with the user are stated as decisions. Requirements the Dramaturg derived from conversation that the user didn't explicitly state are noted as inferences: "Based on the user's goal of [X], this implies [Y]."
+- **Distinguish confirmed decisions from design-level inferences.** Decisions explicitly settled with the user are stated as decisions. Requirements you derived from conversation that the user didn't explicitly state are noted as inferences: "Based on the user's goal of [X], this implies [Y]."
 - **Note open questions explicitly.** If something couldn't be fully resolved during the design phase, say so. Don't silently paper over gaps.
 - **Capture implied requirements separately from stated requirements.** "The user said they want DAG visualization" is stated. "DAG visualization implies a graph data structure" is implied. Both are valuable, but the Arranger needs to know which is which.
 - **Capture intent, not casual specifics.** When the user explored multiple options casually ("maybe a chain icon?"), capture the intent ("indicate blocked status visually") rather than the casual exploration.
@@ -252,7 +263,7 @@ The design doc must convert messy conversational input into structured output wh
 <core>
 ### Journal Archival
 
-<mandatory>Archive the decision journal from `docs/plans/designs/YYYY-MM-DD-<topic>-dramaturg-journal.md` to `docs/archive/plans/designs/YYYY-MM-DD-<topic>-dramaturg-journal.md` when the design doc is finalized. The journal is a working artifact, not a deliverable — but it persists in the archive for the Arranger to consume. The design document stays in `docs/plans/designs/`.</mandatory>
+<mandatory>Archive the decision journal from `docs/plans/designs/YYYY-MM-DD-<topic>-dramaturg-journal.md` to `docs/archive/plans/designs/YYYY-MM-DD-<topic>-dramaturg-journal.md` when the design doc is finalized. Create the archive directory if it doesn't exist. The journal is a working artifact, not a deliverable — but it persists in the archive for the Arranger to consume. The design document stays in `docs/plans/designs/`.</mandatory>
 
 <mandatory>Verify journal completeness before archival — confirm every checkpoint trigger produced an entry. The journal must be complete when it reaches the Arranger. Missing entries mean lost decisions.</mandatory>
 </core>

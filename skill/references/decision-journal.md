@@ -12,7 +12,7 @@
 <core>
 ## Purpose
 
-The decision journal is the Dramaturg's progressive external memory. It captures decisions, research findings, and vision context as the session progresses, ensuring no work is lost to context compaction or session interruption.
+The decision journal is your progressive external memory. It captures decisions, research findings, and vision context as the session progresses, ensuring no work is lost to context compaction or session interruption.
 
 1. **Context preservation** — Settled decisions survive context compaction. Critical for the Review Loop which needs Approach Loop decisions that may have compacted.
 2. **Session resilience** — If a session dies mid-Approach-Loop, the journal preserves all settled approaches and research findings. A new session reads the journal and picks up where it left off.

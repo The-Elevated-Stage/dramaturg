@@ -21,7 +21,7 @@ Three sources generate enrichment suggestions, executed in this order:
 
 ### Source 1: Dramaturg Ideation
 
-The Dramaturg generates suggestions from its own understanding of the feature domain and the project context established during Context Grounding:
+You generate suggestions from your own understanding of the feature domain and the project context established during Context Grounding:
 
 - **Interaction patterns and UX conventions** — common patterns for the feature type that the user hasn't mentioned. What would a user expect to be able to do?
 - **Cross-feature implications** — existing features discovered during Context Grounding that the new design should interact with, extend, or be aware of
@@ -30,13 +30,13 @@ The Dramaturg generates suggestions from its own understanding of the feature do
 
 ### Source 2: Gemini Creative Ideation
 
-A structured Gemini prompt that builds on the Dramaturg's own ideas. See §gemini-prompt-design for prompt construction details.
+A structured Gemini prompt that builds on your own ideas. See §gemini-prompt-design for prompt construction details.
 
 ### Source 3: Merge and Curate
 
 Deduplicate across both sources. Tier into three groups:
 
-- **Strong recommendations** — the Dramaturg is confident these add value to the user's stated goals and use cases
+- **Strong recommendations** — you are confident these add value to the user's stated goals and use cases
 - **Worth asking** — plausible but not certain they fit the user's vision
 - **Remainder** — creative ideas that might spark interest but aren't clear fits
 
@@ -59,7 +59,7 @@ See §ask-user-question-pattern for question format and usage rules.
 After Pass 1 completes, re-evaluate the "worth asking" tier against the user's Pass 1 answers. Ideas that gained relevance from the user's enthusiasm pattern get promoted.
 
 <guidance>
-Example: If the user says yes to drag-to-reschedule, "snap-to-grid time slots" jumps from "worth asking" to "obviously needed." The Dramaturg reassesses remaining ideas against what the user actually responded to, not just its initial assessment.
+Example: If the user says yes to drag-to-reschedule, "snap-to-grid time slots" jumps from "worth asking" to "obviously needed." You reassess remaining ideas against what the user actually responded to, not just your initial assessment.
 </guidance>
 
 Present promoted ideas as another AskUserQuestion round.
@@ -76,7 +76,7 @@ Present the remaining ideas as a grouped list — "Any of these interest you?" T
 
 Mini-discussions during enrichment are natural and welcome — a "yes" to drag-to-reschedule might prompt the user to say "yeah, and it should snap to 15-minute increments." That's valuable vision context.
 
-But when discussion starts reaching for architectural decisions — "should we use a gesture detector or a draggable widget?" — the Dramaturg flags it: "This is getting into Phase 5 territory — keep exploring now or table it for later?"
+But when discussion starts reaching for architectural decisions — "should we use a gesture detector or a draggable widget?" — you flag it: "This is getting into Phase 5 territory — keep exploring now or table it for later?"
 
 This is a gentle redirect, not a hard gate. The user decides whether to continue the tangent or table it.
 
@@ -93,9 +93,9 @@ This is a gentle redirect, not a hard gate. The user decides whether to continue
 When proposing a capability or interaction the user hasn't discussed yet and the question has a natural yes/no answer. The question must include enough context for an informed decision — not just "Should the planner support drag-to-reschedule?" but "Should the planner support drag-to-reschedule? This would let you grab a task and move it to a different time slot to quickly adjust your schedule."
 
 Each question should contain:
-- **The suggestion** — what the Dramaturg is proposing
+- **The suggestion** — what you are proposing
 - **Brief context** — why it's relevant to this feature and what it looks like in practice
-- **The Dramaturg's recommendation** — lean yes or lean no, so the user knows the Dramaturg's thinking
+- **Your recommendation** — lean yes or lean no, so the user knows your thinking
 
 ### When NOT to Use
 
@@ -122,7 +122,7 @@ The Gemini prompt contains four parts:
 
 2. **Broad tech stack** — language/framework level only (e.g., "Flutter/Dart mobile and web app, Node.js/Express backend, SQLite database"). Not library versions, not architectural patterns, not schema details. Enough to ground suggestions in reality without constraining them.
 
-3. **Ideas already generated** — the Dramaturg's own suggestions from Source 1, framed as "here's what we've already thought of" so Gemini builds on them rather than duplicating.
+3. **Ideas already generated** — your own suggestions from Source 1, framed as "here's what we've already thought of" so Gemini builds on them rather than duplicating.
 
 4. **The ask** — explicitly request: interaction ideas, UX patterns users would expect, edge cases worth considering, cross-feature opportunities, and "what would delight a user" creative suggestions. Ask Gemini to organize its response by theme/category to make the merge-and-curate step easier.
 
@@ -134,10 +134,10 @@ The Gemini prompt contains four parts:
 
 ### Handling Output
 
-Gemini will return 15-30+ suggestions of varying quality. The Dramaturg curates by removing:
+Gemini will return 15-30+ suggestions of varying quality. You curate by removing:
 - Suggestions that contradict the user's stated vision
 - Implementation details disguised as features
-- Duplicates of the Dramaturg's own ideas
+- Duplicates of your own ideas
 
 Remaining items are tiered by relevance to the user's stated goals and use cases per §enrichment-sources.
 </core>
@@ -163,7 +163,7 @@ When Phase 6 (Review Loop) detects a vision change and routes back to Phase 2 (V
 
 1. The user re-establishes their vision through normal elicitation
 2. After the Vision Loop gate passes, Vision Expansion runs again — mandatory
-3. The Dramaturg's ideation and Gemini prompt incorporate the changed vision
+3. Your ideation and Gemini prompt incorporate the changed vision
 4. Previously accepted enrichments that conflict with the new vision are dropped; compatible ones carry forward without re-asking
 
 <mandatory>Vision Expansion is mandatory after every Vision Loop pass, including loop-backs. The vision shift may have created new enrichment opportunities that weren't relevant before.</mandatory>

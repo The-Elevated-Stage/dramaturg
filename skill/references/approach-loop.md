@@ -48,7 +48,7 @@ Briefly establish what's being explored and why it matters to the design. Connec
 
 ### Fast-Path for Trivial Topics
 
-Not every topic needs the full research-discuss-settle cycle. If a topic matches an established project pattern and the user expressed clear preference during scoping, the Dramaturg can propose the approach directly: "For [topic], I'd recommend [approach] — it matches your existing [pattern] and you mentioned [preference]. Agree?" On confirmation, proceed directly to §settlement-confirmation.
+Not every topic needs the full research-discuss-settle cycle. If a topic matches a project pattern verified during Context Grounding (not training data assumptions) and the user expressed clear preference during scoping, you can propose the approach directly: "For [topic], I'd recommend [approach] — it matches your existing [pattern] and you mentioned [preference]. Agree?" On confirmation, proceed directly to §settlement-confirmation.
 
 Reserve the full b↔c loop for topics where research would genuinely add value.
 
@@ -62,7 +62,7 @@ Investigate the topic using the research diversion protocol.
 Research depth should be proportional to architectural impact. Foundational decisions (data model, communication protocol, core patterns) deserve exhaustive multi-source investigation. Peripheral decisions (UI preferences, non-critical defaults) need only a quick feasibility check. Over-researching trivial decisions wastes context budget that foundational topics need more.
 </guidance>
 
-When research is needed, follow SKILL.md §research-protocol. Write the journal entry, execute research, return to the recorded step. For simple factual checks, inline Gemini queries suffice. For complex multi-source questions, load `research-protocol.md` per SKILL.md §research-protocol. (This is a reminder of the full protocol in SKILL.md §research-protocol. Follow the full protocol for complex research; this summary covers the common case.)
+When research is needed, follow SKILL.md §research-protocol. Write the journal entry, execute research, return to the recorded step. For simple factual checks, inline Gemini queries suffice. For complex multi-source questions, load `research-protocol.md` via SKILL.md §research-protocol. (This is a reminder of the full protocol in SKILL.md §research-protocol. Follow the full protocol for complex research; this summary covers the common case.)
 
 ### Step c — Discuss Findings
 
@@ -179,7 +179,7 @@ No permission is needed to pivot — the finding speaks for itself. This is a na
 
 If research reveals an approach is feasible but dramatically over-engineered for the use case, mention it conversationally: "This works, but it's significantly more complex than [simpler alternative] for what you need."
 
-This is not a formal gate — just the Dramaturg being a good collaborator. Detailed cost/effort analysis is the Arranger's job, but catching obvious over-engineering early prevents wasting a design cycle on an approach the Arranger would later flag as impractical.
+This is not a formal gate — just being a good collaborator. Detailed cost/effort analysis is the Arranger's job, but catching obvious over-engineering early prevents wasting a design cycle on an approach the Arranger would later flag as impractical.
 
 ### All Alternatives Infeasible
 
@@ -195,7 +195,7 @@ If research proves that ALL reasonable alternatives for a topic are infeasible, 
 <core>
 ## Settlement Confirmation
 
-When the Dramaturg and user have converged on an approach, explicitly confirm before moving on.
+When you and the user have converged on an approach, explicitly confirm before moving on.
 
 ### Confirmation Format
 
@@ -205,11 +205,11 @@ The user either confirms or clarifies. Only on confirmation does the topic count
 
 ### Why Explicit Settlement
 
-Without it, topics get left ambiguous. The user might think they were still exploring options while the Dramaturg moves on assuming a decision was made. The brief confirmation takes a second but prevents misaligned assumptions that compound across the design.
+Without it, topics get left ambiguous. The user might think they were still exploring options while you move on assuming a decision was made. The brief confirmation takes a second but prevents misaligned assumptions that compound across the design.
 
 ### Journal Entry on Settlement
 
-<mandatory>Write a journal entry for every settled topic immediately after settlement confirmation. This is the most journal-intensive phase — every settled topic produces an entry. Skipping a journal entry means a settled decision exists only in conversation context, where it will eventually compact away. The journal is the Dramaturg's external memory.</mandatory>
+<mandatory>Write a journal entry for every settled topic immediately after settlement confirmation. This is the most journal-intensive phase — every settled topic produces an entry. Skipping a journal entry means a settled decision exists only in conversation context, where it will eventually compact away. The journal is your external memory.</mandatory>
 
 <mandatory>After writing the journal entry, confirm to the user: "Journaled — [one-line summary of settled decision]." This confirmation serves as both a checkpoint and a conversation beat that naturally separates topics. The verbal confirmation prevents journal entries from being silently skipped.</mandatory>
 
@@ -223,7 +223,7 @@ Journal entry templates are in §journal-templates. Choose the appropriate type 
 <core>
 ## Ripple Assessment — Re-Entry Protocol
 
-This section is executed when the Review Loop detects an approach change during Phase 6 section review and routes back here through the Phase Registry. The Dramaturg arrives with a specific topic whose approach has changed.
+This section is executed when the Review Loop detects an approach change during Phase 6 section review and routes back here through the Phase Registry. You arrive with a specific topic whose approach has changed.
 
 ### Step 1: Identify the Ripple
 

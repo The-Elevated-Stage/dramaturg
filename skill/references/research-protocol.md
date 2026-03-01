@@ -24,13 +24,13 @@
 
 Research happens when triggered by specific conditions during conversation. It does not happen on a schedule.
 
-**When the Dramaturg recommends an approach:** Research FIRST. Validate the approach, THEN present with evidence. <mandatory>Never recommend based solely on training data for substantive technical decisions. Apply the priority chain: compatibility > reliability > efficiency > security > performance.</mandatory>
+**When you recommend an approach:** Research FIRST. Validate the approach, THEN present with evidence. <mandatory>Never recommend based solely on training data for substantive technical decisions. Apply the priority chain: compatibility > reliability > efficiency > security > performance.</mandatory>
 
 **When the user proposes something with clear intent:** Research immediately to validate feasibility. The intent is clear — do not slow the conversation by asking "should I research this?"
 
 **When the user proposes something with ambiguous intent:** Clarify first. Fully understand the goal. Confirm understanding. THEN ask "should I research this approach?"
 
-**When a protocol or pattern is not already implemented in the project:** Research through Gemini before incorporating it into the design. Even if the Dramaturg "knows" how something works from training data, validate via current research to catch version-specific gotchas and platform constraints.
+**When a protocol or pattern is not already implemented in the project:** Research through Gemini before incorporating it into the design. Even if you "know" how something works from training data, validate via current research to catch version-specific gotchas and platform constraints.
 
 **When NOT to research:**
 - Trivial decisions that don't affect architecture
@@ -88,9 +88,9 @@ Read the most recent "Research Diversion (in progress)" entry in the decision jo
 
 ### Why Gemini Is Primary
 
-A single Gemini query is fundamentally different from a single web search. Gemini runs multiple searches internally, processes the results through a logic filter, and returns synthesized analysis. One Gemini call replaces what would otherwise be 5-10 individual Brave queries plus the Dramaturg's own synthesis work — all without consuming main conversation context on intermediate results.
+A single Gemini query is fundamentally different from a single web search. Gemini runs multiple searches internally, processes the results through a logic filter, and returns synthesized analysis. One Gemini call replaces what would otherwise be 5-10 individual Brave queries plus your own synthesis work — all without consuming main conversation context on intermediate results.
 
-This makes Gemini the most context-efficient research tool available. The Dramaturg gets a synthesized answer with tradeoffs analyzed, alternatives surfaced, and edge cases identified — in one call. Using Brave-search to achieve the same result would mean: run query → read results → run refined query → read more results → synthesize findings — consuming conversation context at every step.
+This makes Gemini the most context-efficient research tool available. You get a synthesized answer with tradeoffs analyzed, alternatives surfaced, and edge cases identified — in one call. Using Brave-search to achieve the same result would mean: run query → read results → run refined query → read more results → synthesize findings — consuming conversation context at every step.
 
 **Where Gemini excels:**
 - Feasibility checks — "Does X work with Y in this configuration?"
@@ -138,11 +138,11 @@ Where Explore subagents are optimized for codebase navigation, general-purpose s
 
 ### The Core Principle
 
-Subagents protect the main conversation context. The Dramaturg's primary context is the design discussion with the user — research that might be verbose, speculative, or a dead end should not consume that context directly.
+Subagents protect the main conversation context. Your primary context is the design discussion with the user — research that might be verbose, speculative, or a dead end should not consume that context directly.
 
 ### When to Use Subagents
 
-**Speculative research — might be a dead end.** If the Dramaturg thinks "this might not lead anywhere but I should check," that's a subagent job. The subagent explores in isolation. If productive, the summary is all the main session needs. If a dead end, the main session lost nothing.
+**Speculative research — might be a dead end.** If you think "this might not lead anywhere but I should check," that's a subagent job. The subagent explores in isolation. If productive, the summary is all the main session needs. If a dead end, the main session lost nothing.
 
 **Multi-source comparison.** Comparing three frameworks or five approach options across multiple dimensions generates verbose intermediate analysis. A subagent synthesizes and returns a focused comparison.
 
@@ -152,7 +152,7 @@ Subagents protect the main conversation context. The Dramaturg's primary context
 
 **Quick factual checks.** "Does Flutter's geolocator package support WiFi positioning?" — one Gemini query, answered inline. No subagent overhead needed.
 
-**Research with clear direction.** When the Dramaturg knows exactly what to check and the answer will be concise, inline research is faster and lower-overhead.
+**Research with clear direction.** When you know exactly what to check and the answer will be concise, inline research is faster and lower-overhead.
 
 ### Choosing Subagent Type
 
@@ -247,7 +247,7 @@ If Gemini becomes unavailable during an active design session (timeout, rate lim
 3. **Offer the choice:** "Want to wait and retry in a few minutes, or continue without research on this topic?"
 4. **If continuing without research:** Clearly mark any subsequent recommendations as unresearched. The user should know which decisions have research backing and which don't. Journal any unresearched decisions without an Arranger note — the Arranger must verify them independently.
 
-<mandatory>Never silently fall back to training data. The user decides what happens when Gemini is unavailable. The Dramaturg's value is research-backed design — removing the research without the user's knowledge undermines the entire skill.</mandatory>
+<mandatory>Never silently fall back to training data. The user decides what happens when Gemini is unavailable. Your value is research-backed design — removing the research without the user's knowledge undermines the entire skill.</mandatory>
 
 ### Degraded Gemini Performance
 

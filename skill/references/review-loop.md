@@ -1,15 +1,11 @@
 <skill>
 
 <sections>
-<!-- Presentation -->
 - section-presentation
-<!-- Feedback handling -->
 - feedback-classification
 - vision-regression
 - approach-change-routing
-<!-- Quality -->
 - security-lens
-<!-- Completion -->
 - section-approval
 - exit
 </sections>
@@ -87,7 +83,7 @@ The most subtle classification — detecting when user feedback during review ac
 
 ### The Three-Question Test
 
-Compare the feedback against the Vision Baseline journal entry. Does the feedback change the Dramaturg's answer to any of these:
+Compare the feedback against the Vision Baseline journal entry. Does the feedback change your answer to any of these:
 
 1. **What** does the user want to build?
 2. **Why** do they want to build it?
@@ -115,7 +111,7 @@ Vision regression detection has false positives. What looks like a vision change
 When routing back to Vision Loop after a confirmed vision change:
 
 - The full mandatory path applies: Vision Loop → Vision Expansion (Phase 3) → Broad Design Scoping (Phase 4) → Approach Loop (Phase 5)
-- **Topics that existed in both old and new Topic Maps whose approaches are still valid** need re-confirmation, not full re-exploration. The Dramaturg presents the existing settlement and asks: "This approach still works with the updated vision — confirmed?"
+- **Topics that existed in both old and new Topic Maps whose approaches are still valid** need re-confirmation, not full re-exploration. You present the existing settlement and ask: "This approach still works with the updated vision — confirmed?"
 - **Topics that are new or fundamentally affected by the vision change** need full exploration through the standard §research-discuss-settle loop
 - Old journal entries are preserved (the journal is append-only) but new entries supersede them
 - Previously accepted Vision Expansion enrichments that conflict with the new vision are dropped; compatible ones carry forward without re-asking
@@ -145,7 +141,7 @@ When an approach change is detected:
 
 <mandatory>Do not execute the ripple assessment here. The Approach Loop's §ripple-assessment contains the full protocol for identifying affected topics, scoping invalidation with the user, and re-exploring affected topics. This section detects and routes — the Approach Loop executes.</mandatory>
 
-<mandatory>Route through the Phase Registry, not directly to approach-loop.md. The Phase Registry re-bootstraps the Dramaturg with fresh framing and constraints before entering the Approach Loop.</mandatory>
+<mandatory>Route through the Phase Registry, not directly to approach-loop.md. The Phase Registry re-bootstraps you with fresh framing and constraints before entering the Approach Loop.</mandatory>
 
 ### Entry Point Guidance for Approach Loop
 

@@ -4,19 +4,20 @@
 - question-strategy
 - gate-verification
 - loop-back-conditions
+- exit
 </sections>
 
 <section id="question-strategy">
 <core>
 ## Question Strategy
 
-The Vision Loop is brainstorming-style dialogue: open-ended, one question at a time, drawing the user out. The goal is to understand what the user wants, why they want it, and how they'll use it — entirely from the user's own words. The Dramaturg contributes design ideas later (Phase 3); here, it listens.
+The Vision Loop is brainstorming-style dialogue: open-ended, one question at a time, drawing the user out. The goal is to understand what the user wants, why they want it, and how they'll use it — entirely from the user's own words. You contribute design ideas later (Phase 3); here, you listen.
 
 The Vision Loop draws out What/Why/How-used entirely from the user's own words. Each dimension requires a different questioning approach because users volunteer them differently.
 
 ### Drawing Out "What"
 
-Usually the easiest — users typically arrive with at least a rough "what." The Dramaturg's job is to expand and clarify, not to accept the first description as complete.
+Usually the easiest — users typically arrive with at least a rough "what." Your job is to expand and clarify, not to accept the first description as complete.
 
 - Ask about scope: "When you say [feature], what does that include?"
 - Ask about specifics the user glossed over: "You mentioned [thing] — tell me more about what that looks like."
@@ -33,7 +34,7 @@ The hardest dimension. Users often skip straight from "what" to "how" without ar
 
 ### Drawing Out "How-Used"
 
-Requires concrete scenario questions. Abstract use-case descriptions ("users will manage their tasks") are not useful — the Dramaturg needs specific scenarios that reveal the user's mental model.
+Requires concrete scenario questions. Abstract use-case descriptions ("users will manage their tasks") are not useful — you need specific scenarios that reveal the user's mental model.
 
 - Ask for a walkthrough: "Walk me through a typical day using this feature."
 - Ask for edge cases: "What's the least obvious way you'd use this?"
@@ -71,13 +72,13 @@ The Vision Loop gate is strict. It is the one phase transition that should be ex
 
 ### The Three Questions
 
-Before transitioning, the Dramaturg must be able to answer all three from user input alone:
+Before transitioning, you must be able to answer all three from user input alone:
 
 1. **What** does the user want to build?
 2. **Why** do they want to build it? (the motivation, the problem it solves)
 3. **How** will they use it? (concrete use cases, user scenarios)
 
-<mandatory>These answers must come strictly from what the user has said. Do not infer the "why" from project context. Do not fill in use cases from training data. Do not count the Dramaturg's own reasoning as user input. If any answer is missing or relies on inference, keep asking.</mandatory>
+<mandatory>These answers must come strictly from what the user has said. Do not infer the "why" from project context. Do not fill in use cases from training data. Do not count your own reasoning as user input. If any answer is missing or relies on inference, keep asking.</mandatory>
 
 ### Adapted Gate for Non-Feature Work
 
@@ -91,7 +92,7 @@ The What/Why/How-used gate assumes user-facing features. For system qualities (e
 
 ### Verification Procedure
 
-When the Dramaturg believes all three questions are answered:
+When you believe all three questions are answered:
 
 1. **Summarize explicitly.** Present the understanding back to the user in a structured summary: "Here's what I understand about your vision — **What:** [summary]. **Why:** [summary]. **How you'll use it:** [summary]."
 2. **Ask for confirmation.** "Does this capture it? Is there anything I'm missing or getting wrong?"
@@ -126,9 +127,6 @@ Journal entries use these status values:
 - **in-progress** — research diversion currently active
 - **ruled-out** — approach researched and found infeasible
 
-### Exit
-
-Proceed to Phase Registry → Vision Expansion.
 </core>
 </section>
 
@@ -140,7 +138,7 @@ Two paths lead back into the Vision Loop.
 
 ### Loop-Back to Context Grounding
 
-During vision gathering, the user may reveal project context that the Dramaturg hasn't explored. Examples:
+During vision gathering, the user may reveal project context that you haven't explored. Examples:
 - "This needs to integrate with the notification system" — and notifications haven't been explored
 - "It should build on the existing scheduling feature" — and that feature's architecture is unknown
 - "The backend already has something similar" — and that similarity hasn't been verified
@@ -157,6 +155,14 @@ If vision regression is detected and confirmed during Phase 6 section review, th
 - Previously approved sections remain in place — they will be re-evaluated during Reconciliation (Phase 7)
 - Re-establish the vision with the updated understanding using the same question strategy and gate verification
 - <mandatory>After re-establishing: proceed through Vision Expansion (Phase 3) and then Broad Design Scoping (Phase 4). Both are mandatory — the vision shift may have created new enrichment opportunities, and the design territory may have shifted.</mandatory>
+</core>
+</section>
+
+<section id="exit">
+<core>
+## Exit
+
+Proceed to Phase Registry → Vision Expansion.
 </core>
 </section>
 
