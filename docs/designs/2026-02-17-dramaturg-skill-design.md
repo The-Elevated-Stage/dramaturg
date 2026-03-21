@@ -543,7 +543,7 @@ The journal is the Dramaturg's answer to context exhaustion:
 - **During Phase 6 (Reconciliation):** The journal's section approval entries provide a compact view of all approved sections without re-reading full section text.
 - **On session resumption:** A new session reads the journal first, then the most recent conversation context, and can determine: what phase was active, what's been settled, what research has been done.
 
-The journal does not *solve* the 200k context limit — a complex feature will still pressure context. But it ensures that the *most important* information (settled decisions, validated research, vision baseline) is recoverable regardless of what slides out of the conversation window.
+The journal does not *solve* the 1M context limit — a complex feature will still pressure context. But it ensures that the *most important* information (settled decisions, validated research, vision baseline) is recoverable regardless of what slides out of the conversation window.
 
 **The Phase 4→5 boundary is the designed session split point.** The workflow intentionally separates the discussion-research loop (Phase 4) from section writing (Phase 5) so the user can cut the session between them. A new session reads the journal and proceeds directly to Phase 5 with full context available — no loss of settled decisions, no need to re-discuss approaches. This architectural choice means the skill never needs to compress output or rush analysis to save context. Phase 4 gets thorough analysis; Phase 5 gets a clean context budget.
 
