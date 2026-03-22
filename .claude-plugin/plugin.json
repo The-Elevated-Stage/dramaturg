@@ -1,0 +1,13 @@
+{
+  "name": "dramaturg",
+  "description": "Research-driven design exploration for The Elevated Stage",
+  "version": "1.0.0",
+  "author": {
+    "name": "The Elevated Stage",
+    "url": "https://github.com/The-Elevated-Stage"
+  },
+  "homepage": "https://github.com/The-Elevated-Stage/dramaturg",
+  "repository": "https://github.com/The-Elevated-Stage/dramaturg.git",
+  "license": "MIT",
+  "keywords": ["orchestration", "design", "research", "elevated-stage"]
+}
