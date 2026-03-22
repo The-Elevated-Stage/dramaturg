@@ -95,11 +95,11 @@ The distinction is: technology feasibility questions that shape the design are i
 
 ## Validation
 
-After changes are made, verify:
-- [ ] Journal path in SKILL.md and all references points to `docs/plans/designs/decisions/{feature-name}/dramaturg-journal.md`
-- [ ] No archival instruction exists anywhere in the skill files
-- [ ] Feature-name derivation is consistent with the protocol (strip date prefix and `-design` suffix)
-- [ ] Artifact count is consistently "two" across all files
-- [ ] Phase 7 exit includes transition guidance for `/arranger`
-- [ ] Scope protection gray zone examples are clear about technology feasibility being in-scope
-- [ ] UNRESEARCHED status is documented in SKILL.md and research-strategy.md
+All verified (2026-03-01):
+- [x] Journal path in SKILL.md and all references points to `docs/plans/designs/decisions/<topic>/dramaturg-journal.md`
+- [x] No archival instruction exists anywhere in the skill files (anti-archival note in support-phases.md)
+- [x] Feature-name derivation documented in SKILL.md §decision-journal with example
+- [x] Artifact count is consistently "two" across all files
+- [x] Phase 8 exit includes transition guidance for `/arranger` with path template
+- [x] Scope protection gray zone examples include technology feasibility (FCM example)
+- [x] UNRESEARCHED status documented in decision-journal.md and support-phases.md (research-strategy.md renamed to research-protocol.md during lean hub refactor)
