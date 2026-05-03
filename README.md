@@ -47,10 +47,13 @@ Dramaturg works through eight phases, each with a specific role. Phases are a st
 | 4 | Broad Design Scoping | High-level framing questions (max 6 across all areas) |
 | 5 | Approach Loop | Research-backed topic exploration and settlement |
 | 6 | Review Loop | Per-section detailed design review |
+| 6.5 | Fresh Eyes Review | Independent review by fresh-context teammate (recommended for complex designs) |
 | 7 | Reconciliation | Cross-section consistency check |
 | 8 | Final Design Doc | Compile and output |
 
 The Approach Loop (Phase 5) is where the Dramaturg spends the most time. A single topic's discussion may last 30-60+ minutes of back-and-forth research and exploration. Thoroughness here is the skill's primary value.
+
+For complex designs (4+ interacting approaches, concurrency or multi-process concerns, designs that Claude itself will use as a tool), Phase 6.5 (Fresh Eyes Review) is the second high-value phase. The designing session can't effectively review its own work — it shares the same assumptions that produced the design. Phase 6.5 spawns a fresh-context teammate within the current session to surface flaws invisible from the inside. The evaluation is mandatory; execution is gated by explicit, auditable criteria documented in `references/fresh-eyes-review.md`.
 
 ## Vision Expansion
 
@@ -80,6 +83,8 @@ Research happens when triggered by specific conditions, not on a schedule:
 | Unimplemented protocol or pattern | Research through Gemini before incorporating |
 | Trivial decisions, clarification exchanges | No research needed |
 
+For broad-landscape research — multiple existing systems, comparative survey, adopt-vs-build evaluation — the Dramaturg uses a 3-stage Gemini pipeline (`references/staged-brainstorming.md`) instead of single-shot brainstorming. Stage 1 inventories breadth via grounded search; Stage 2 synthesizes with a dedicated anti-pattern catalog; Stage 3 contextualizes against the design vision with explicit pushback. Single-shot prompts collapse breadth, structure, and application into one call and predictably miss anti-patterns.
+
 Tool hierarchy for research:
 1. **Gemini MCP** — primary for feasibility, technical questions, approach analysis
 2. **Brave-search** — discovering what exists (libraries, articles, community sentiment)
@@ -91,11 +96,11 @@ Research should over-investigate, not under-investigate. The Dramaturg provides 
 
 ## Decision Journal
 
-The decision journal is the Dramaturg's progressive external memory — an append-only log at `docs/plans/designs/YYYY-MM-DD-<topic>-dramaturg-journal.md` that captures decisions, research findings, and vision context as the session progresses.
+The decision journal is the Dramaturg's progressive external memory — an append-only log at `docs/plans/designs/decisions/<topic>/dramaturg-journal.md` that captures decisions, research findings, and vision context as the session progresses.
 
 **Why it exists:**
 - **Context preservation** — settled decisions survive context compaction
-- **Session resilience** — if a session dies mid-Approach-Loop, a new session reads the journal and picks up where it left off
+- **Session resilience** — if a session is interrupted (crash, network drop, context exhaustion), a resumed session reads the journal and picks up where it left off
 - **Pipeline handoff** — entries marked VERIFIED let the Arranger skip re-verification; PARTIAL flags what still needs checking
 - **Audit trail** — shows how the design evolved, not just the final answer
 
@@ -112,7 +117,7 @@ The Dramaturg produces two artifacts:
 
 1. **Design document** — `docs/plans/designs/YYYY-MM-DD-<topic>-design.md`. An open-ended narrative capturing the design vision. Required elements: a Goals section (opening) with verbose, context-rich statements of the user's goals, and an Arranger Notes appendix (closing) flagging new protocols, open questions, and key design decisions for the planner.
 
-2. **Decision journal** — `docs/plans/designs/YYYY-MM-DD-<topic>-dramaturg-journal.md`. The structured decision trail described above. Archived to `docs/archive/` after the design doc is finalized.
+2. **Decision journal** — `docs/plans/designs/decisions/<topic>/dramaturg-journal.md`. The structured decision trail described above. Persists alongside any future Repetiteur consultation journals — not archived after the design doc is finalized; the Arranger and Repetiteur expect it at this path.
 
 After compilation, the Dramaturg informs the user: "The design is complete. When you're ready, invoke the Arranger to create an implementation plan from this design."
 
@@ -129,11 +134,9 @@ After compilation, the Dramaturg informs the user: "The design is complete. When
 | Vision Loop gate | Strict: must answer What / Why / How-used from user input alone before proceeding |
 | Research before recommendation | Never recommend based solely on training data for substantive technical decisions |
 
-## Session Management
+## Session Resilience
 
-The Approach Loop (Phase 5) is the most context-intensive phase. When context pressure builds, the Dramaturg evaluates a session split at the Phase 5→6 boundary — completing approach exploration in one session, then starting the Review Loop fresh in a new session.
-
-When starting a new session (fresh or post-split), the Dramaturg bootstraps from the decision journal:
+When a session is resumed — after a crash, network drop, context exhaustion, or simply a fresh start against an existing decision journal — the Dramaturg bootstraps from the journal:
 
 1. Read the journal — the authoritative record of all settled decisions
 2. Identify the current phase from the most recent entry type
@@ -142,23 +145,35 @@ When starting a new session (fresh or post-split), the Dramaturg bootstraps from
 
 If the journal is missing or corrupted, the Dramaturg reconstructs from conversation context if available. If both are unavailable, it starts fresh from the earliest unverifiable phase.
 
+For context-heavy sub-work within a single session — review of the finalized design (Phase 6.5), broad-landscape research (staged brainstorming), or codebase exploration — the Dramaturg spawns teammates within the current session rather than splitting work across sessions. Teammates have their own bounded context windows and don't pollute the orchestrator's; file-based handoffs transfer context. This is more responsive than a session split and lets the user participate in one conversation rather than coordinating two.
+
 ## Project Structure
 
 ```
 dramaturg/
-├── skill/
-│   ├── SKILL.md                          # Skill definition (entry point)
-│   └── references/
-│       ├── support-phases.md             # Phases 1, 4, 7, 8
-│       ├── vision-loop.md               # Phase 2
-│       ├── vision-expansion.md          # Phase 3 (enrichment and proactive ideation)
-│       ├── approach-loop.md             # Phase 5 (core research-discuss-settle loop)
-│       ├── review-loop.md              # Phase 6
-│       └── research-strategy.md        # Research tool hierarchy and delegation
+├── .claude-plugin/
+│   └── plugin.json                          # Plugin manifest
+├── skills/
+│   └── dramaturg/
+│       ├── SKILL.md                         # Skill definition (entry point)
+│       ├── references/
+│       │   ├── support-phases.md            # Phases 1, 4, 7, 8
+│       │   ├── vision-loop.md               # Phase 2
+│       │   ├── vision-expansion.md          # Phase 3 (enrichment and proactive ideation)
+│       │   ├── approach-loop.md             # Phase 5 (core research-discuss-settle loop)
+│       │   ├── review-loop.md               # Phase 6
+│       │   ├── fresh-eyes-review.md         # Phase 6.5 (independent review by fresh-context teammate)
+│       │   ├── staged-brainstorming.md      # Broad-landscape research pattern (3-stage Gemini pipeline)
+│       │   ├── research-protocol.md         # Research triggers, diversion flow, tool hierarchy
+│       │   ├── decision-journal.md          # Journal entry types and lifecycle
+│       │   └── conversation-style.md        # Cross-phase conversational guidance
+│       └── examples/
+│           ├── example-design-document.md
+│           └── example-decision-journal.md
 └── docs/
-    ├── archive/                         # Historical docs
-    ├── designs/                         # Skill design specifications
-    └── working/                         # Active design work
+    ├── archive/                             # Historical docs
+    ├── designs/                             # Skill design specifications
+    └── working/                             # Pattern-enrichment discovery docs (e.g., 2026-04-08-fresh-eyes-review-pattern.md)
 ```
 
 ## Requirements

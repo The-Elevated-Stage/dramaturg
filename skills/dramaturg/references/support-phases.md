@@ -133,6 +133,8 @@ Follow these steps in order. This is the prescribed workflow referenced from the
 
 Read the decision journal's Section Approval entries for a compact view of all approved sections. List them with their key decisions. This is the working set for reconciliation — avoid re-reading full section text unless a conflict needs detailed inspection.
 
+If Phase 6.5 (Fresh Eyes Review) was executed, also read the Fresh Eyes Finding entries. Findings with `resolution-status: deferred-to-arranger` propagate forward into the final design doc's Arranger Notes (see §final-design-doc) — they do not block Reconciliation but must be carried through.
+
 If no Section Approval journal entries exist (e.g., journal was not maintained during Review Loop), reconstruct the approved sections from conversation context and present the reconstruction to the user for verification before proceeding with reconciliation.
 
 ### Step 2: Cross-Section Consistency Check
@@ -258,6 +260,11 @@ The design doc must convert messy conversational input into structured output wh
 ### Key Design Decisions
 - [Brief pointers to the most architecturally significant decisions]
 - [Not a full list — the journal has the complete trail]
+
+### Fresh Eyes Findings (Deferred)
+- [Findings from Phase 6.5 with resolution-status: deferred-to-arranger]
+- [Each finding includes severity (breaking / oversight / assumption-flaw), original decision affected, and the specific Arranger investigation or verification it requires]
+- [Omit this sub-section entirely if Phase 6.5 was skipped, or if all Phase 6.5 findings were resolved-in-review-loop or held-with-justification]
 </template>
 
 <core>

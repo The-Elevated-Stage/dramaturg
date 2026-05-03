@@ -32,6 +32,8 @@ You generate suggestions from your own understanding of the feature domain and t
 
 A structured Gemini prompt that builds on your own ideas. See §gemini-prompt-design for prompt construction details.
 
+When the enrichment requires broad-landscape research (e.g., "what do other systems in this category do, and what should we incorporate or avoid?"), use the staged-brainstorming pattern instead of single-shot Gemini ideation. See `references/staged-brainstorming.md`. Single-shot ideation collapses inventory, comparison, and application into one call and predictably misses anti-patterns.
+
 ### Source 3: Merge and Curate
 
 Deduplicate across both sources. Tier into three groups:

@@ -34,7 +34,7 @@ tier: 3
 - Research diversion entries must be written to the decision journal before every research diversion and updated to "settled" after return
 - Reference files: focus on the section relevant to your current phase. Other sections provide context but are not your current concern.
 - Scope protection: when users push for implementation details (file paths, function signatures, variable names, package versions), redirect to architecture-level language. Implementation details are the Arranger's concern.
-- Output length: never truncate or compress reasoning to fit an artificial limit. Thorough reasoning is the skill's value. If context pressure is a concern, use the Phase 5→6 session split, not compressed analysis.
+- Output length: never truncate or compress reasoning to fit an artificial limit. Thorough reasoning is the skill's value. If context pressure is a concern, spawn a teammate within the current session for context-heavy sub-work (e.g., a fresh-context reviewer per `references/fresh-eyes-review.md`, or a research subagent per `references/research-protocol.md`) — do not compress analysis to fit. For ordinary mid-phase context exhaustion (not heavy sub-work), the journal's resilience properties carry the resumption — see `references/decision-journal.md` §lifecycle.
 - Vision Loop gate and Vision Expansion are non-skippable. No phase may be skipped entirely — every phase must be entered and its exit conditions met.
 </mandatory>
 </section>
@@ -95,6 +95,7 @@ These are the phases of your workflow. When a reference file says "Proceed to Ph
 | 4 | **Broad Design Scoping** | High-level framing questions | `support-phases.md` §broad-design-scoping |
 | 5 | **Approach Loop** | Research-backed topic exploration and settlement | `approach-loop.md` |
 | 6 | **Review Loop** | Per-section detailed design review | `review-loop.md` |
+| 6.5 | **Fresh Eyes Review** | Independent review by fresh-context teammate(s) — recommended for complex designs (see `fresh-eyes-review.md` §evaluation-criteria) | `fresh-eyes-review.md` |
 | 7 | **Reconciliation** | Cross-section consistency check | `support-phases.md` §reconciliation |
 | 8 | **Final Design Doc** | Compile and output | `support-phases.md` §final-design-doc |
 
@@ -169,7 +170,7 @@ Read §broad-design-scoping only. Question framing constraints, topic map constr
 **Journal checkpoint:** Write a Decision or Research entry for every settled topic.
 
 <reference path="references/approach-loop.md" load="required">
-Topic selection, research-discuss-settle loop, tangent bounding, vision-change detection, infeasibility pivots, settlement confirmation, session split evaluation (required before exiting Phase 5), ripple assessment protocol, journal templates.
+Topic selection, research-discuss-settle loop, tangent bounding, vision-change detection, infeasibility pivots, settlement confirmation, ripple assessment protocol, journal templates.
 </reference>
 
 ---
@@ -186,6 +187,22 @@ Topic selection, research-discuss-settle loop, tangent bounding, vision-change d
 
 <reference path="references/review-loop.md" load="required">
 Section presentation, feedback classification framework, vision regression test (applied after each section), security lens analysis, approach change detection, section approval journal template.
+</reference>
+
+---
+
+### Fresh Eyes Review
+
+**Role:** Independent review of the finalized design by fresh-context teammate(s). Catches flaws invisible to the designing session because the reviewer does not share the session's accumulated assumptions.
+
+<mandatory>Phase 6.5 *evaluation* is mandatory; *execution* is conditional on the evaluation criteria. Every Phase 6.5 transition writes an Evaluation Decision journal entry capturing which criteria fired and the resulting decision (invoke or skip), regardless of whether execution proceeds. The evaluation criteria are binary and auditable — see `references/fresh-eyes-review.md` §evaluation-criteria.</mandatory>
+
+<mandatory>If executed: spawn reviewer teammate(s) within the current session, never a separate session. Provide ONLY the finalized design document — not the decision journal, not the conversation history, not your synthesis. The lack of context is the feature.</mandatory>
+
+**Journal checkpoint:** Write the Evaluation Decision entry on every transition (always). If executed, write a Fresh Eyes Finding entry per finding.
+
+<reference path="references/fresh-eyes-review.md" load="required">
+Anchoring problem, three-agent pattern, evaluation criteria, teammate spawning, behavioral and technical reviewer prompts, three-agent discussion flow, per-domain scaling, journal templates, exit conditions.
 </reference>
 
 ---
@@ -282,7 +299,7 @@ Collaborative tone, fluid phase transitions, disproportionate complexity awarene
 <core>
 ## Session Bootstrap
 
-When starting a new session (fresh or post-split):
+When resuming an interrupted session, or starting a fresh session against an existing decision journal:
 
 <mandatory>
 1. **Read the decision journal** — the journal is the authoritative record of all settled decisions, research findings, and vision context

@@ -15,7 +15,7 @@
 The decision journal is your progressive external memory. It captures decisions, research findings, and vision context as the session progresses, ensuring no work is lost to context compaction or session interruption.
 
 1. **Context preservation** — Settled decisions survive context compaction. Critical for the Review Loop which needs Approach Loop decisions that may have compacted.
-2. **Session resilience** — If a session dies mid-Approach-Loop, the journal preserves all settled approaches and research findings. A new session reads the journal and picks up where it left off.
+2. **Session resilience** — If a session dies mid-Approach-Loop (crash, network drop, context exhaustion), the journal preserves all settled approaches and research findings. A resumed session reads the journal and picks up where it left off.
 3. **Pipeline handoff** — Research-backed decisions carry forward to the Arranger. Entries marked VERIFIED let the Arranger skip re-verification. Entries marked PARTIAL flag what still needs checking.
 4. **Audit trail** — Shows how the design evolved, not just the final answer.
 </core>
@@ -102,6 +102,16 @@ Journal writes happen at:
 
 Consultation journals (from the Repetiteur) are distinct from Dramaturg journals. A future Repetiteur consultation can override a prior Repetiteur's decision, but cannot override a user decision found in Dramaturg journals without escalating to the user.
 </core>
+
+<guidance>
+### Context Exhaustion as a Legitimate Session End
+
+When normal context exhaustion hits mid-phase — not heavy sub-work that fits the teammate-spawning pattern (per `SKILL.md` §mandatory-rules output-length rule), just running out of room — the journal's resilience properties cover the resumption path. A resumed session reads the journal first, identifies the current phase from the most recent entry type (per `SKILL.md` §session-bootstrap), verifies completeness, and continues from the recorded position.
+
+This is distinct from the obsolete topic-count threshold (the 200k-context-era guidance that recommended evaluating a session split at the Phase 5→6 boundary based on topic count). Context-pressure stop-points can occur anywhere — mid-Phase-5, mid-Phase-3, mid-anything. The journal carries you through regardless of where the stop happens, so do not reintroduce a phase-boundary heuristic to decide when to stop.
+
+The teammate-spawning pattern referenced in `SKILL.md` §mandatory-rules covers a different scenario: heavy sub-work (a fresh-context reviewer, a codebase exploration, a research deep-dive) that benefits from its own bounded context. For ordinary "I'm running out of room" exhaustion, journal-and-resume is the right move; teammate spawning would be over-engineering.
+</guidance>
 </section>
 
 </skill>

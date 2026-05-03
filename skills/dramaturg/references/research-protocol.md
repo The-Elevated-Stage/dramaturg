@@ -32,6 +32,8 @@ Research happens when triggered by specific conditions during conversation. It d
 
 **When a protocol or pattern is not already implemented in the project:** Research through Gemini before incorporating it into the design. Even if you "know" how something works from training data, validate via current research to catch version-specific gotchas and platform constraints.
 
+**When research scope is broad-landscape (multiple existing systems, comparative survey, adopt-vs-build evaluation):** escalate from single-shot Gemini to the staged-brainstorming pattern. See `references/staged-brainstorming.md`. A single-shot prompt cannot cleanly do breadth + structure + application in one pass — staged calls force each cognitive job to be honest.
+
 **When NOT to research:**
 - Trivial decisions that don't affect architecture
 - Clarification exchanges still establishing intent
@@ -60,6 +62,7 @@ Research happens when triggered by specific conditions during conversation. It d
 **Step 2 — Execute research:**
 
 Tool selection (use the best tool for each job):
+0. **Staged brainstorming pipeline** (`references/staged-brainstorming.md`) — for broad-landscape research questions. Use this *before* reaching for single-shot Gemini when the question is "what's out there and what should we adopt/avoid." See §trigger-rules for the trigger conditions.
 1. **Gemini MCP** — Primary for feasibility research, technical questions, approach analysis. Excels at synthesizing tradeoffs and suggesting alternatives.
 2. **Brave-search** — Discovering what exists: new libraries, recent articles, community sentiment.
 3. **Explore subagents** — Codebase understanding, architectural analysis. Use subagents to keep main context clean.

@@ -9,7 +9,6 @@
 - infeasibility-pivot
 - settlement-confirmation
 - ripple-assessment
-- session-split
 - journal-templates
 - exit
 </sections>
@@ -263,40 +262,6 @@ After re-settling each topic in the ripple set, check: does the new settlement a
 </core>
 </section>
 
-<section id="session-split">
-<core>
-## Session Split Evaluation
-
-Before transitioning to Phase 6, evaluate whether the session should split. The Phase 5→6 boundary is the designed natural cut point for session management.
-
-### Evaluation Criteria
-
-- **8+ topics or lengthy discussion:** Recommend the user check context usage and consider starting a fresh session for Phase 6. The decision journal preserves all settled approaches, research findings, and the vision baseline — a new session reads the journal and proceeds directly to section writing.
-- **4-6 topics:** Mention the option without pushing. "We've settled all the approaches. Want to continue to section review, or start fresh? The journal has everything we need either way."
-- **Small feature:** Continue without comment.
-
-### What the Split Preserves
-
-The journal carries across sessions:
-- Vision Baseline (What/Why/How-used)
-- Topic Map (confirmed coverage)
-- Every settled decision and research finding
-- All goal and use-case entries with verbatim user input
-
-A new session reads the journal first and has full context to write detailed sections without any of the Phase 5 discussion needing to be in the conversation window.
-
-<mandatory>For complex features where session splitting is recommended: ensure journal entries are detailed enough for a fresh session to understand the reasoning behind settlements — not just the outcome. If a topic required extensive debate or had closely competing alternatives, document the key differentiators that tipped the decision in the journal's "Alternatives discussed" or "Findings" fields. A post-split Phase 6 session must be able to execute a ripple assessment using only journal entries, without the Phase 5 discussion context.</mandatory>
-
-### What the Split Is NOT
-
-This is not about compressing output or rushing Phase 5 to save context. Thorough Phase 5 analysis is the skill's core value. The split is about starting Phase 6 with a clean context budget so section writing and review get the same thoroughness that approach discussion did.
-
-### Post-Split Continuation
-
-If the session splits: the fresh session reads SKILL.md first, then the decision journal, identifies the current phase as Phase 6 (Review Loop), and enters the Phase Registry to pick up from there. The journal carries all necessary context.
-</core>
-</section>
-
 <section id="journal-templates">
 <core>
 ## Journal Entry Templates
@@ -356,9 +321,8 @@ For topics validated through Gemini, web search, or subagent investigation. The 
 <mandatory>Phase 5 is complete when ALL of the following are true:
 1. Every topic from the Topic Map has been explored and settled (Read the Topic Map journal entry and verify each listed topic has a corresponding Decision or Research journal entry)
 2. Every settled topic has a journal entry (verify by reviewing the journal)
-3. The session split evaluation (§session-split) has been considered
 
-When all three are true, proceed to Phase Registry → Review Loop.</mandatory>
+When both are true, proceed to Phase Registry → Review Loop.</mandatory>
 </core>
 </section>
 

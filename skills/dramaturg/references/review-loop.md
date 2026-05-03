@@ -221,7 +221,7 @@ When all sections are approved, verify:
 - Every section has a Section Approval journal entry
 - No feedback is pending or unclassified
 
-Proceed to Phase Registry → Reconciliation.
+Then evaluate Phase 6.5 (Fresh Eyes Review) per `references/fresh-eyes-review.md` §evaluation-criteria. The evaluation is mandatory regardless of whether execution proceeds — write the Evaluation Decision journal entry. If any SHOULD-invoke criterion fires, proceed to Phase Registry → Fresh Eyes Review. Otherwise, proceed to Phase Registry → Reconciliation.
 </core>
 </section>
 
