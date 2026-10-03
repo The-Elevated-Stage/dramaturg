@@ -1,0 +1,2 @@
+- Remove all "comms_link" protocols and wording. This system is now fully deprecated and can be "forgotten" in our skill
+- Karpathy and anti-sycophancy principles(Direct references: Anti-Sycophancy= https://www.nature.com/articles/s41746-025-02008-z Karpathy= https://github.com/forrestchang/andrej-karpathy-skills/tree/main)

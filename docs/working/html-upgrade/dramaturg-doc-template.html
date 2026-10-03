@@ -1,0 +1,2304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="reviewer" content="">
+  <title>Design Review — Dramaturg HTML Template</title>
+  <style>
+    /* ── Color tokens ─────────────────────────────────────────── */
+    :root {
+      --c-bg:          #fafaf8;
+      --c-bg-elev:     #ffffff;
+      --c-bg-subtle:   #f3f4f6;
+      --c-text:        #1a1a1a;
+      --c-text-muted:  #4b5563;
+      --c-text-faint:  #6b7280;
+      --c-accent:      #4a5d6e;
+      --c-accent-str:  #2d3e4e;
+      --c-accent-soft: #e6ecf0;
+      --c-border:      #d1d5db;
+      --c-border-soft: #e5e7eb;
+      --c-approved:    #22c55e;
+      --c-open-q:      #f59e0b;
+      --c-needs-rev:   #ef4444;
+      --c-unreviewed:  transparent;
+      --c-mark-bg:     #fef08a;
+      --c-mark-hover:  #fb923c;
+      --c-override-bg: #fef3c7;
+      --c-override-bd: #f59e0b;
+      --c-override-tx: #78350f;
+      /* ── Semantic colors for rich body content (Argus V3 upgrade, 2026-05-25) ── */
+      /* See READ-FIRST-rich-rendering-rules.md §2 Rule 7 for usage guide */
+      --c-decision:    #2563eb;
+      --c-decision-bg: #eff6ff;
+      --c-warning:     #f59e0b;
+      --c-warning-bg:  #fffbeb;
+      --c-info:        #0891b2;
+      --c-info-bg:     #ecfeff;
+      --c-rejected:    #dc2626;
+      --c-rejected-bg: #fef2f2;
+      --c-principle:   #7c3aed;
+      --c-principle-bg:#f5f3ff;
+      --c-key:         #059669;
+      --c-key-bg:      #ecfdf5;
+      --c-v4:          #c026d3;
+      --c-v4-bg:       #fae8ff;
+      --c-v5:          #6b7280;
+      --c-v5-bg:       #f3f4f6;
+      --c-primary-clr: #b45309;
+      --c-primary-bg:  #fef3c7;
+      --mono: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+      --progress: 0%;
+    }
+
+    /* ── Reset / base ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      background: var(--c-bg);
+      color: var(--c-text);
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+      min-width: 1320px;
+    }
+
+    /* ── Page structure ───────────────────────────────────────── */
+    #page-header {
+      background: var(--c-bg-elev);
+      border-bottom: 2px solid var(--c-accent);
+      padding: 1.1rem 1.5rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+    }
+
+    .header-top {
+      display: flex;
+      align-items: baseline;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.4rem;
+    }
+
+    #plan-title {
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: var(--c-text);
+      letter-spacing: -0.01em;
+      margin: 0;
+    }
+
+    #plan-meta {
+      font-size: 0.83rem;
+      color: var(--c-text-muted);
+      display: flex;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+    }
+
+    #plan-meta strong { color: var(--c-text); }
+
+    /* ── Global progress bar ──────────────────────────────────── */
+    #progress-container {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin: 0.5rem 0 0.6rem;
+    }
+
+    #progress-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--c-text-muted);
+      white-space: nowrap;
+      min-width: 110px;
+    }
+
+    #progress-track {
+      flex: 1;
+      height: 5px;
+      background: var(--c-border-soft);
+      border-radius: 3px;
+      overflow: hidden;
+      max-width: 320px;
+    }
+
+    #progress-fill {
+      height: 100%;
+      background: var(--c-accent);
+      width: var(--progress);
+      border-radius: 3px;
+      transition: width 0.35s ease;
+    }
+
+    /* ── Tab nav ──────────────────────────────────────────────── */
+    #tab-nav {
+      display: flex;
+      gap: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    #tab-nav::-webkit-scrollbar { display: none; }
+
+    .tab-btn {
+      flex-shrink: 0;
+      padding: 0.55rem 1.1rem 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--c-text-muted);
+      background: transparent;
+      border: none;
+      border-top: 3px solid transparent;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: color 0.12s, border-color 0.12s;
+      position: relative;
+    }
+
+    .tab-btn:hover { color: var(--c-text); }
+
+    .tab-btn.active {
+      color: var(--c-accent-str);
+      font-weight: 600;
+      border-bottom: 2px solid var(--c-accent-str);
+    }
+
+    /* Per-tab key prefix in the nav label (e.g., "T1") — see rules §2 Rule 6 */
+    .tab-btn .tab-key {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--c-text-faint);
+      margin-right: 0.3rem;
+      font-weight: 600;
+    }
+
+    .tab-btn.active .tab-key { color: var(--c-accent); }
+
+    /* Per-tab status borders */
+    .tab-btn[data-state="approved"]       { border-top-color: var(--c-approved); border-top-width: 3px; }
+    .tab-btn[data-state="open-questions"] { border-top-color: var(--c-open-q);   border-top-width: 3px; }
+    .tab-btn[data-state="needs-revision"] { border-top-color: var(--c-needs-rev);border-top-width: 3px; }
+    .tab-btn[data-state="unreviewed"]     { border-top-color: transparent;        border-top-width: 1px; }
+
+    /* ── Two-column main area ─────────────────────────────────── */
+    #main-area {
+      display: flex;
+      min-height: calc(100vh - 130px);
+    }
+
+    #content-area {
+      flex: 1 1 72%;
+      min-width: 900px;
+      padding: 1.5rem 1.8rem 3rem;
+      overflow-y: auto;
+    }
+
+    /* ── Tab panels ───────────────────────────────────────────── */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── Phase content typography ─────────────────────────────── */
+    .phase-content h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin: 0 0 0.6rem;
+      color: var(--c-text);
+      letter-spacing: -0.015em;
+    }
+
+    /* H1 suffix (e.g., "— what V3 is and why") — see rules §3 */
+    .phase-content h1 .h1-suffix {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--c-text-muted);
+      margin-left: 0.5rem;
+    }
+
+    .phase-content h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--c-accent-str);
+      margin: 2.4rem 0 0.8rem;
+      padding-bottom: 0.3rem;
+      border-bottom: 1px solid var(--c-border-soft);
+      letter-spacing: -0.005em;
+    }
+
+    /* H2 key prefix (e.g., "§2.3") — see rules §3 */
+    .phase-content h2 .h2-key {
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      color: var(--c-text-faint);
+      margin-right: 0.5rem;
+      font-weight: 600;
+    }
+
+    .phase-content h2:first-of-type { margin-top: 1.2rem; }
+
+    .phase-content h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 1.4rem 0 0.45rem;
+      color: var(--c-text);
+    }
+
+    /* Section separator bars between top-level h3 blocks within a phase tab */
+    .phase-content > h3 {
+      padding-top: 1.5rem;
+      margin-top: 2rem;
+      border-top: 1px solid var(--c-border);
+    }
+
+    .phase-content > h3:first-child {
+      padding-top: 0;
+      margin-top: 0;
+      border-top: none;
+    }
+
+    .phase-content p { margin: 0.65em 0; }
+
+    .phase-content code {
+      font-family: var(--mono);
+      font-size: 0.87em;
+      background: var(--c-bg-subtle);
+      padding: 0.1em 0.35em;
+      border-radius: 3px;
+      color: #1f2937;
+      white-space: nowrap;
+    }
+
+    .phase-content pre {
+      background: var(--c-bg-subtle);
+      border: 1px solid var(--c-border-soft);
+      border-radius: 4px;
+      padding: 0.85rem 1rem;
+      overflow-x: auto;
+      font-size: 0.86rem;
+      line-height: 1.5;
+      margin: 0.8em 0;
+    }
+
+    .phase-content pre code {
+      background: none;
+      padding: 0;
+      white-space: pre;
+    }
+
+    .phase-content ul, .phase-content ol { margin: 0.5em 0; padding-left: 1.5em; }
+    .phase-content li { margin: 0.3em 0; }
+
+    .phase-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.8em 0;
+      font-size: 0.9rem;
+    }
+
+    .phase-content th, .phase-content td {
+      text-align: left;
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid var(--c-border-soft);
+      vertical-align: top;
+    }
+
+    .phase-content th {
+      background: var(--c-bg-subtle);
+      font-weight: 700;
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--c-text-muted);
+      border-bottom: 2px solid var(--c-border);
+    }
+
+    .phase-content td:first-child {
+      font-weight: 600;
+      color: var(--c-accent-str);
+    }
+
+    /* ── Sub-track card grid ──────────────────────────────────── */
+    .subtrack-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 0.75rem;
+      margin: 1rem 0;
+    }
+
+    .subtrack-card {
+      background: var(--c-bg-elev);
+      border: 1px solid var(--c-border-soft);
+      border-left: 3px solid var(--c-accent);
+      border-radius: 4px;
+      padding: 0.75rem 0.95rem;
+      font-size: 0.9rem;
+    }
+
+    .subtrack-card .card-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--c-accent-str);
+      margin: 0 0 0.4rem;
+    }
+
+    .subtrack-card .card-body {
+      color: var(--c-text-muted);
+      font-size: 0.875rem;
+      line-height: 1.5;
+    }
+
+    /* ── Supervisor gate ──────────────────────────────────────── */
+    .supervisor-gate {
+      margin: 1.8rem 0 1.2rem;
+      background: var(--c-bg-elev);
+      border: 1px solid var(--c-border-soft);
+      border-radius: 4px;
+      padding: 0.5rem 0.9rem;
+    }
+
+    .supervisor-gate summary {
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--c-accent-str);
+      padding: 0.2rem 0;
+      list-style: none;
+      position: relative;
+      padding-left: 1.2rem;
+      font-size: 0.92rem;
+    }
+
+    .supervisor-gate summary::before {
+      content: "▸";
+      position: absolute;
+      left: 0;
+      transition: transform 0.15s ease;
+      color: var(--c-accent);
+    }
+
+    .supervisor-gate[open] > summary::before {
+      transform: rotate(90deg);
+    }
+
+    .supervisor-gate summary:hover { color: var(--c-text); }
+
+    .supervisor-gate .gate-body {
+      padding: 0.65rem 0 0.25rem;
+      font-size: 0.88rem;
+      color: var(--c-text-muted);
+    }
+
+    /* ── Review status control ────────────────────────────────── */
+    .review-status {
+      border: 1px solid var(--c-border);
+      border-radius: 6px;
+      padding: 0.95rem 1.1rem;
+      margin: 1.5rem 0 0.5rem;
+      background: var(--c-bg-elev);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+
+    .review-status legend {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--c-text-faint);
+      padding: 0 0.3rem;
+      float: left;
+      width: 100%;
+      margin-bottom: 0.6rem;
+    }
+
+    .rs-option {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin: 0;
+      padding: 0.45rem 0.85rem;
+      border: 1px solid var(--c-border-soft);
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: background 0.12s, border-color 0.12s;
+      user-select: none;
+    }
+
+    .rs-option:hover { background: var(--c-bg-subtle); }
+
+    .rs-option input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .rs-option[data-value="unreviewed"]     { color: var(--c-text-muted); }
+    .rs-option[data-value="approved"]       { color: #16a34a; }
+    .rs-option[data-value="open-questions"] { color: #d97706; }
+    .rs-option[data-value="needs-revision"] { color: #dc2626; }
+
+    .rs-option.selected[data-value="unreviewed"]     { background: var(--c-bg-subtle); border-color: var(--c-border); }
+    .rs-option.selected[data-value="approved"]       { background: #dcfce7; border-color: var(--c-approved); }
+    .rs-option.selected[data-value="open-questions"] { background: #fef3c7; border-color: var(--c-open-q); }
+    .rs-option.selected[data-value="needs-revision"] { background: #fee2e2; border-color: var(--c-needs-rev); }
+
+    .rs-icon {
+      font-size: 1em;
+      line-height: 1;
+    }
+
+    /* ── Confirmation animation ───────────────────────────────── */
+    @keyframes rs-confirm {
+      0%   { transform: scale(1);    opacity: 1; }
+      40%  { transform: scale(1.08); opacity: 1; }
+      100% { transform: scale(1);    opacity: 1; }
+    }
+
+    .rs-confirm-flash {
+      animation: rs-confirm 0.6s ease-out;
+    }
+
+    /* ── Notes sidebar ────────────────────────────────────────── */
+    #notes-sidebar {
+      width: 28%;
+      min-width: 360px;
+      max-width: 480px;
+      flex-shrink: 0;
+      border-left: 1px solid var(--c-border-soft);
+      background: var(--c-bg-elev);
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 130px;
+      height: calc(100vh - 130px);
+      overflow: hidden;
+    }
+
+    /* ── Add-note input region ────────────────────────────────── */
+    #add-note-region {
+      display: none;
+      padding: 0.8rem;
+      border-bottom: 1px solid var(--c-border-soft);
+      background: var(--c-bg-subtle);
+      flex-shrink: 0;
+    }
+
+    #add-note-region.visible { display: block; }
+
+    #note-excerpt-label {
+      font-size: 0.76rem;
+      color: var(--c-text-faint);
+      margin-bottom: 0.4rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    #note-excerpt-text {
+      color: var(--c-text-muted);
+      font-style: italic;
+    }
+
+    #note-textarea {
+      width: 100%;
+      min-height: 72px;
+      max-height: 140px;
+      padding: 0.5rem 0.6rem;
+      font-family: inherit;
+      font-size: 0.875rem;
+      border: 1px solid var(--c-border);
+      border-radius: 4px;
+      resize: vertical;
+      background: var(--c-bg-elev);
+      color: var(--c-text);
+      line-height: 1.5;
+    }
+
+    #note-textarea:focus { outline: 2px solid var(--c-accent); outline-offset: 1px; }
+
+    .note-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.45rem;
+    }
+
+    .btn-save-note, .btn-cancel-note {
+      padding: 0.35rem 0.8rem;
+      font-size: 0.83rem;
+      font-weight: 600;
+      border-radius: 4px;
+      border: 1px solid transparent;
+      cursor: pointer;
+    }
+
+    .btn-save-note {
+      background: var(--c-accent);
+      color: #fff;
+      border-color: var(--c-accent);
+    }
+
+    .btn-save-note:hover { background: var(--c-accent-str); }
+
+    .btn-cancel-note {
+      background: transparent;
+      color: var(--c-text-muted);
+      border-color: var(--c-border);
+    }
+
+    .btn-cancel-note:hover { background: var(--c-bg-subtle); }
+
+    /* ── Note list ────────────────────────────────────────────── */
+    #notes-list-header {
+      padding: 0.6rem 0.8rem 0.3rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--c-text-faint);
+      flex-shrink: 0;
+    }
+
+    #notes-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0.2rem 0.6rem 0.5rem;
+    }
+
+    .note-card {
+      background: var(--c-bg-elev);
+      border: 1px solid var(--c-border-soft);
+      border-radius: 4px;
+      padding: 0.6rem 0.7rem;
+      margin-bottom: 0.5rem;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: box-shadow 0.12s, border-color 0.12s;
+    }
+
+    .note-card:hover {
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      border-color: var(--c-accent);
+    }
+
+    .note-card.highlight-hover {
+      box-shadow: 0 3px 12px rgba(74,93,110,0.2);
+      border-color: var(--c-accent);
+      border-width: 2px;
+    }
+
+    .note-card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .note-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.5rem;
+      height: 1.5rem;
+      background: var(--c-accent);
+      color: #fff;
+      border-radius: 50%;
+      font-size: 0.7rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .note-badge.orphan {
+      background: var(--c-border);
+      color: var(--c-text-faint);
+    }
+
+    .note-section-ref {
+      font-size: 0.72rem;
+      color: var(--c-text-faint);
+      font-family: var(--mono);
+      flex: 1;
+    }
+
+    .note-delete {
+      background: none;
+      border: none;
+      color: var(--c-text-faint);
+      cursor: pointer;
+      font-size: 0.8rem;
+      padding: 0.1rem 0.2rem;
+      border-radius: 3px;
+      line-height: 1;
+    }
+
+    .note-delete:hover { color: var(--c-needs-rev); background: #fee2e2; }
+
+    .note-excerpt {
+      font-size: 0.78rem;
+      color: var(--c-text-faint);
+      font-style: italic;
+      margin-bottom: 0.25rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    .note-text {
+      color: var(--c-text);
+      line-height: 1.4;
+    }
+
+    .orphan-label {
+      font-size: 0.72rem;
+      color: var(--c-text-faint);
+      font-style: italic;
+      margin-top: 0.2rem;
+    }
+
+    /* ── Notes sidebar bottom toolbar ────────────────────────── */
+    #notes-toolbar {
+      border-top: 1px solid var(--c-border-soft);
+      padding: 0.6rem 0.7rem;
+      display: flex;
+      gap: 0.5rem;
+      flex-shrink: 0;
+    }
+
+    .btn-notes-action {
+      flex: 1;
+      padding: 0.35rem 0.4rem;
+      font-size: 0.76rem;
+      font-weight: 600;
+      border: 1px solid var(--c-border);
+      border-radius: 4px;
+      background: var(--c-bg-subtle);
+      color: var(--c-text-muted);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-notes-action:hover { background: var(--c-accent-soft); color: var(--c-accent-str); }
+
+    /* ── Save indicator ───────────────────────────────────────── */
+    #save-indicator {
+      font-size: 0.72rem;
+      color: #16a34a;
+      opacity: 0;
+      transition: opacity 0.4s;
+      padding: 0 0.4rem;
+      align-self: center;
+    }
+
+    #save-indicator.visible { opacity: 1; }
+
+    /* ── Text selection highlight ────────────────────────────── */
+    ::selection          { background: #fde68a; color: inherit; }
+    ::-moz-selection     { background: #fde68a; color: inherit; }
+
+    /* ── Document marks ───────────────────────────────────────── */
+    mark[data-note-id] {
+      background: #fde68a;
+      border-radius: 2px;
+      cursor: pointer;
+      padding: 0 2px;
+      outline: 1.5px solid var(--c-open-q);  /* solid = saved note */
+      outline-offset: 1px;
+      box-shadow: 0 0 0 0.5px var(--c-open-q); /* subtle reinforcing edge */
+    }
+
+    mark[data-note-id].hover-accent { background: var(--c-mark-hover); }
+
+    /* Pending highlight — wraps selection before textarea focus steals it */
+    mark.pending-highlight {
+      background: #fde68a; /* same amber as ::selection — seamless pending→saved transition */
+      padding: 0 2px;
+      border-radius: 2px;
+      outline: 1px dashed #d97706; /* dashed distinguishes pending from saved */
+      outline-offset: 1px;
+    }
+
+    /* ── Scroll-to-top button (in sidebar toolbar) ───────────── */
+    #scroll-top-fab {
+      /* Moved into sidebar toolbar — no longer position:fixed */
+    }
+
+    /* ── Placeholder state (pre-injection) ────────────────────── */
+    .injection-placeholder {
+      padding: 2rem 0;
+      color: var(--c-text-faint);
+      font-style: italic;
+      font-size: 0.95rem;
+      border: 1px dashed var(--c-border);
+      border-radius: 6px;
+      text-align: center;
+      margin: 1.5rem 0;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       V3-RENDER VISUAL PRIMITIVES — added 2026-05-25
+       See READ-FIRST-rich-rendering-rules.md for usage rules.
+       Every section in §5 of that file maps to a primitive below.
+       ═══════════════════════════════════════════════════════════ */
+
+    /* ── At-a-glance summary card (top of every tab) ─────────────── */
+    /* See rules §3 — required structure for every panel */
+    .summary-card {
+      background: linear-gradient(180deg, var(--c-accent-soft), var(--c-bg-elev));
+      border: 1px solid var(--c-accent);
+      border-left: 5px solid var(--c-accent-str);
+      border-radius: 6px;
+      padding: 1.1rem 1.3rem 1rem;
+      margin: 0.6rem 0 1.5rem;
+    }
+    .summary-card .summary-label {
+      font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em;
+      font-weight: 700; color: var(--c-accent-str); margin-bottom: 0.4rem;
+    }
+    .summary-card .summary-title {
+      font-size: 1.05rem; font-weight: 700; color: var(--c-text); margin: 0 0 0.65rem;
+    }
+    .summary-card .summary-blurb {
+      font-size: 0.92rem; color: var(--c-text-muted); line-height: 1.55; margin: 0 0 0.7rem;
+    }
+    .summary-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 0.55rem 0.8rem; margin-top: 0.6rem;
+    }
+    .summary-grid .sg-item {
+      background: var(--c-bg-elev); border: 1px solid var(--c-border-soft);
+      border-radius: 4px; padding: 0.5rem 0.65rem;
+    }
+    .summary-grid .sg-label {
+      font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.07em; color: var(--c-text-faint); margin-bottom: 0.15rem;
+    }
+    .summary-grid .sg-value {
+      font-size: 0.92rem; color: var(--c-text); font-weight: 600;
+    }
+    .summary-grid .sg-value.thin {
+      font-weight: 400; color: var(--c-text-muted); font-size: 0.85rem;
+    }
+
+    /* ── Status badges ──────────────────────────────────────────── */
+    /* See rules §6 for taxonomy. Do not invent new variants without adding a row in §6. */
+    .badge {
+      display: inline-block; padding: 0.12rem 0.45rem;
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em;
+      text-transform: uppercase; border-radius: 3px; vertical-align: middle;
+      border: 1px solid transparent; font-family: -apple-system, sans-serif;
+    }
+    .badge-settled  { background: #dcfce7; color: #065f46; border-color: #86efac; }
+    .badge-dropped  { background: #fee2e2; color: #991b1b; border-color: #fca5a5; }
+    .badge-deferred { background: var(--c-v4-bg); color: #86198f; border-color: #f0abfc; }
+    .badge-v4       { background: var(--c-v4-bg); color: #86198f; border-color: #f0abfc; }
+    .badge-v5       { background: #e5e7eb; color: #374151; border-color: var(--c-border); }
+    .badge-primary  { background: var(--c-primary-bg); color: var(--c-primary-clr); border-color: #fcd34d; }
+    .badge-new      { background: var(--c-decision-bg); color: #1d4ed8; border-color: #93c5fd; }
+    .badge-key      { background: var(--c-key-bg); color: var(--c-key); border-color: #6ee7b7; }
+    .badge-verified { background: #ecfdf5; color: #047857; border-color: #6ee7b7; }
+    .badge-partial  { background: var(--c-warning-bg); color: #92400e; border-color: #fde68a; }
+    .badge-open     { background: var(--c-warning-bg); color: #92400e; border-color: #fde68a; }
+    .badge-info     { background: var(--c-info-bg); color: #0e7490; border-color: #67e8f9; }
+    .badge-warn     { background: var(--c-warning-bg); color: #92400e; border-color: #fde68a; }
+    .badge-urgent   { background: #ffedd5; color: #9a3412; border-color: #fdba74; }
+    .badge-critical { background: #fee2e2; color: #991b1b; border-color: #fca5a5; }
+    .badge-action   { background: #1f2937; color: #fff; border-color: #1f2937; }
+
+    /* ── Callouts ───────────────────────────────────────────────── */
+    /* See rules §7 for taxonomy. Use ≤2-3 per sub-section to avoid noise. */
+    .callout {
+      border-left: 4px solid var(--c-border); background: var(--c-bg-subtle);
+      padding: 0.7rem 0.95rem; margin: 0.9rem 0;
+      border-radius: 0 4px 4px 0; font-size: 0.92rem;
+    }
+    .callout .co-head {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.06em; margin-bottom: 0.35rem;
+    }
+    .callout .co-icon { font-size: 0.95rem; line-height: 1; }
+    .callout .co-body { color: var(--c-text); line-height: 1.55; }
+    .callout .co-body p:first-child { margin-top: 0; }
+    .callout .co-body p:last-child { margin-bottom: 0; }
+    .callout .co-body code { white-space: normal; }
+    .callout-decision  { border-color: var(--c-decision);  background: var(--c-decision-bg); }
+    .callout-decision .co-head  { color: var(--c-decision); }
+    .callout-warning   { border-color: var(--c-warning);   background: var(--c-warning-bg); }
+    .callout-warning .co-head   { color: #b45309; }
+    .callout-info      { border-color: var(--c-info);      background: var(--c-info-bg); }
+    .callout-info .co-head      { color: #0e7490; }
+    .callout-rejected  { border-color: var(--c-rejected);  background: var(--c-rejected-bg); }
+    .callout-rejected .co-head  { color: var(--c-rejected); }
+    .callout-principle { border-color: var(--c-principle); background: var(--c-principle-bg); }
+    .callout-principle .co-head { color: var(--c-principle); }
+    .callout-key       { border-color: var(--c-key);       background: var(--c-key-bg); }
+    .callout-key .co-head       { color: var(--c-key); }
+    .callout-primary   { border-color: var(--c-primary-clr); background: var(--c-primary-bg); }
+    .callout-primary .co-head   { color: var(--c-primary-clr); }
+    .callout-quote     { border-left: 4px solid var(--c-text-faint); background: #fafafa; font-style: italic; color: var(--c-text-muted); }
+    .callout-quote .co-attribution {
+      display: block; font-style: normal; font-size: 0.78rem;
+      color: var(--c-text-faint); margin-top: 0.35rem;
+    }
+
+    /* ── Layer-stack (N-tier architecture diagrams) ─────────────── */
+    .layer-stack { display: grid; grid-template-columns: 1fr; gap: 0.5rem; margin: 1rem 0; }
+    .layer-row {
+      display: grid; grid-template-columns: 100px 1fr;
+      align-items: stretch; border: 1px solid var(--c-border-soft);
+      border-radius: 5px; overflow: hidden; background: var(--c-bg-elev);
+    }
+    .layer-row .layer-label {
+      background: var(--c-accent-str); color: #fff;
+      padding: 0.85rem 0.6rem; font-weight: 700; font-size: 0.86rem;
+      text-align: center; display: flex; flex-direction: column;
+      justify-content: center; align-items: center; gap: 0.15rem;
+    }
+    .layer-row .layer-tier {
+      font-size: 0.66rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.08em; opacity: 0.75;
+    }
+    .layer-row .layer-body { padding: 0.75rem 1rem; font-size: 0.9rem; color: var(--c-text); }
+    .layer-row .layer-body strong { color: var(--c-accent-str); }
+    .layer-row .layer-body .layer-detail {
+      font-size: 0.85rem; color: var(--c-text-muted); margin-top: 0.35rem;
+    }
+    /* Color-by-tier variants — extend with new classes as needed */
+    .layer-row.layer-transport .layer-label { background: #1e40af; }
+    .layer-row.layer-core      .layer-label { background: #047857; }
+    .layer-row.layer-plugins   .layer-label { background: #7c3aed; }
+
+    /* ── Phase flow (horizontal phase ladder) ───────────────────── */
+    .phase-flow {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0.5rem; margin: 1rem 0;
+    }
+    .phase-flow .pf-cell {
+      background: var(--c-bg-elev); border: 1px solid var(--c-border-soft);
+      border-top: 3px solid var(--c-accent); border-radius: 4px;
+      padding: 0.65rem 0.75rem; font-size: 0.85rem;
+    }
+    .phase-flow .pf-tag {
+      font-family: var(--mono); font-size: 1.1rem; font-weight: 700;
+      color: var(--c-accent-str); margin-bottom: 0.15rem;
+    }
+    .phase-flow .pf-title {
+      font-weight: 600; color: var(--c-text); font-size: 0.82rem; margin-bottom: 0.35rem;
+    }
+    .phase-flow .pf-body { font-size: 0.78rem; color: var(--c-text-muted); line-height: 1.4; }
+    .phase-flow .pf-cell.pf-critical { border-top-color: var(--c-rejected); }
+    .phase-flow .pf-cell.pf-critical .pf-tag { color: var(--c-rejected); }
+    .phase-flow .pf-cell.pf-parallel { border-top-color: var(--c-info); }
+    .phase-flow .pf-cell.pf-parallel .pf-tag { color: var(--c-info); }
+    .phase-flow .pf-cell.pf-gate { border-top-color: var(--c-warning); }
+    .phase-flow .pf-cell.pf-gate .pf-tag { color: #b45309; }
+    .phase-flow .pf-cell.pf-open { border-top-color: var(--c-principle); }
+    .phase-flow .pf-cell.pf-open .pf-tag { color: var(--c-principle); }
+
+    /* ── Principle grid (N-card cross-cutting principles) ───────── */
+    .principle-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 0.6rem; margin: 0.8rem 0;
+    }
+    .principle-card {
+      background: var(--c-bg-elev); border: 1px solid var(--c-border-soft);
+      border-top: 3px solid var(--c-principle); border-radius: 5px;
+      padding: 0.75rem 0.9rem;
+    }
+    .principle-card .pc-num {
+      display: inline-block; width: 1.5rem; height: 1.5rem;
+      background: var(--c-principle); color: #fff; border-radius: 50%;
+      text-align: center; line-height: 1.5rem; font-weight: 700;
+      font-size: 0.78rem; margin-right: 0.4rem;
+    }
+    .principle-card .pc-title {
+      display: inline-block; font-weight: 700; color: var(--c-text); font-size: 0.95rem;
+    }
+    .principle-card .pc-body {
+      margin-top: 0.4rem; font-size: 0.85rem; color: var(--c-text-muted); line-height: 1.5;
+    }
+    .principle-card .pc-body code { white-space: normal; }
+
+    /* ── Hierarchy tree (ASCII tree with colored chips) ─────────── */
+    .hierarchy-tree {
+      font-family: var(--mono); font-size: 0.86rem;
+      background: var(--c-bg-subtle); border: 1px solid var(--c-border-soft);
+      border-radius: 5px; padding: 1rem 1.2rem; margin: 1rem 0;
+      line-height: 1.65; color: var(--c-text);
+    }
+    .hierarchy-tree .ht-node {
+      display: inline-block; padding: 0.05rem 0.4rem; border-radius: 3px;
+      background: var(--c-bg-elev); border: 1px solid var(--c-border-soft); font-weight: 600;
+    }
+    /* Role variants — extend with new classes as needed (PM/TL/Worker/Crewmate/etc.) */
+    .hierarchy-tree .ht-node.ht-primary  { background: var(--c-primary-bg); border-color: #fcd34d; color: var(--c-primary-clr); }
+    .hierarchy-tree .ht-node.ht-pm       { background: #dbeafe; border-color: #93c5fd; color: #1e40af; }
+    .hierarchy-tree .ht-node.ht-tl       { background: #dcfce7; border-color: #86efac; color: #065f46; }
+    .hierarchy-tree .ht-node.ht-worker   { background: #f3e8ff; border-color: #d8b4fe; color: #6b21a8; }
+    .hierarchy-tree .ht-node.ht-crewmate { background: #fef3c7; border-color: #fde68a; color: #92400e; }
+    .hierarchy-tree .ht-comment { color: var(--c-text-faint); font-style: italic; }
+
+    /* ── Cascade list (numbered steps with allow/fail color cues) ── */
+    .cascade-list {
+      list-style: none; counter-reset: cascade; padding: 0; margin: 0.8rem 0;
+    }
+    .cascade-list li {
+      counter-increment: cascade;
+      padding: 0.6rem 0.85rem 0.6rem 2.6rem;
+      position: relative; background: var(--c-bg-elev);
+      border: 1px solid var(--c-border-soft); border-radius: 4px;
+      margin-bottom: 0.4rem; font-size: 0.9rem;
+    }
+    .cascade-list li::before {
+      content: counter(cascade);
+      position: absolute; left: 0.75rem; top: 50%;
+      transform: translateY(-50%);
+      width: 1.4rem; height: 1.4rem;
+      background: var(--c-accent); color: #fff;
+      border-radius: 50%; text-align: center; line-height: 1.4rem;
+      font-weight: 700; font-size: 0.78rem; font-family: var(--mono);
+    }
+    .cascade-list li.fail::before  { background: var(--c-rejected); }
+    .cascade-list li.allow::before { background: var(--c-approved); }
+    .cascade-list li .cl-title {
+      font-weight: 600; color: var(--c-text); display: block; margin-bottom: 0.15rem;
+    }
+    .cascade-list li .cl-detail { font-size: 0.83rem; color: var(--c-text-muted); }
+
+    /* ── Matrix table (reachability / visibility / authority) ───── */
+    .matrix-table {
+      width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.85rem;
+    }
+    .matrix-table th, .matrix-table td {
+      border: 1px solid var(--c-border-soft); padding: 0.4rem 0.55rem; text-align: center;
+    }
+    .matrix-table th {
+      background: var(--c-bg-subtle); font-weight: 700; color: var(--c-text-muted);
+      font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .matrix-table thead th:first-child { background: var(--c-accent-str); color: #fff; }
+    .matrix-table td:first-child, .matrix-table th[scope="row"] {
+      background: var(--c-bg-subtle); text-align: left;
+      font-weight: 600; color: var(--c-accent-str);
+    }
+    .matrix-table .cell-yes  { background: #dcfce7; color: #065f46; font-weight: 600; }
+    .matrix-table .cell-no   { background: #fee2e2; color: #991b1b; font-weight: 600; }
+    .matrix-table .cell-cond { background: var(--c-warning-bg); color: #92400e; font-weight: 600; font-size: 0.78rem; }
+    .matrix-table .cell-na   { background: #f9fafb; color: var(--c-text-faint); }
+
+    /* ── Alias chips (compact tag-style) ────────────────────────── */
+    .alias-chip-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.5rem 0 1rem; }
+    .alias-chip {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      padding: 0.25rem 0.55rem;
+      background: var(--c-bg-elev); border: 1px solid var(--c-border);
+      border-radius: 20px;
+      font-family: var(--mono); font-size: 0.78rem; font-weight: 600;
+      color: var(--c-accent-str);
+    }
+    .alias-chip .ac-desc {
+      font-family: inherit; font-weight: 400;
+      color: var(--c-text-muted); font-size: 0.75rem;
+    }
+
+    /* ── Role cards (grid of label/value detail cards) ──────────── */
+    .role-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 0.8rem; margin: 1rem 0;
+    }
+    .role-card {
+      background: var(--c-bg-elev); border: 1px solid var(--c-border-soft);
+      border-top: 4px solid var(--c-accent); border-radius: 5px;
+      padding: 0.8rem 0.95rem; font-size: 0.88rem;
+    }
+    .role-card .rc-head {
+      display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 0.5rem;
+    }
+    .role-card .rc-num {
+      font-family: var(--mono); font-size: 1.05rem; font-weight: 700; color: var(--c-accent);
+    }
+    .role-card .rc-title {
+      font-weight: 700; color: var(--c-text); font-size: 0.98rem;
+    }
+    .role-card .rc-row {
+      display: grid; grid-template-columns: 90px 1fr; gap: 0.4rem;
+      padding: 0.3rem 0; border-top: 1px solid var(--c-border-soft);
+    }
+    .role-card .rc-row:first-of-type { border-top: none; }
+    .role-card .rc-label {
+      font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.06em; color: var(--c-text-faint);
+      align-self: start; padding-top: 0.1rem;
+    }
+    .role-card .rc-value {
+      font-size: 0.85rem; color: var(--c-text); line-height: 1.45;
+    }
+    .role-card .rc-value code { white-space: normal; }
+    .role-card.role-critical { border-top-color: var(--c-rejected); }
+    .role-card.role-critical .rc-num { color: var(--c-rejected); }
+
+    /* ── Budget ladder (vertical %-gauge with severity coloring) ── */
+    .budget-ladder {
+      display: grid; grid-template-columns: 80px 1fr;
+      margin: 1rem 0; border: 1px solid var(--c-border-soft);
+      border-radius: 5px; overflow: hidden;
+    }
+    .budget-ladder .bl-row { display: contents; }
+    .budget-ladder .bl-pct, .budget-ladder .bl-act {
+      padding: 0.55rem 0.7rem;
+      border-bottom: 1px solid var(--c-border-soft); font-size: 0.86rem;
+    }
+    .budget-ladder .bl-row:last-child .bl-pct,
+    .budget-ladder .bl-row:last-child .bl-act { border-bottom: none; }
+    .budget-ladder .bl-pct {
+      background: var(--c-bg-subtle); font-family: var(--mono);
+      font-weight: 700; text-align: right; color: var(--c-text);
+    }
+    .budget-ladder .bl-act { background: var(--c-bg-elev); }
+    .budget-ladder .bl-row.sev-info .bl-pct     { background: var(--c-info-bg); color: #0e7490; }
+    .budget-ladder .bl-row.sev-warn .bl-pct     { background: var(--c-warning-bg); color: #92400e; }
+    .budget-ladder .bl-row.sev-urgent .bl-pct   { background: #ffedd5; color: #9a3412; }
+    .budget-ladder .bl-row.sev-critical .bl-pct { background: var(--c-rejected); color: #fff; }
+    .budget-ladder .bl-row.sev-action .bl-pct   { background: #1f2937; color: #fff; }
+    .budget-ladder .bl-row.broadcast .bl-act { font-weight: 600; }
+
+    /* ── Decision flow (vertical mini-flowchart) ────────────────── */
+    .decision-flow {
+      display: grid; grid-template-columns: 1fr; gap: 0.35rem;
+      margin: 1rem 0; max-width: 720px;
+    }
+    .df-node {
+      padding: 0.55rem 0.85rem; border-radius: 5px;
+      font-size: 0.86rem; font-weight: 500; position: relative;
+      border: 1px solid var(--c-border); background: var(--c-bg-elev);
+    }
+    .df-node.df-start { background: var(--c-accent-soft); border-color: var(--c-accent); font-weight: 600; }
+    .df-node.df-cond  { background: var(--c-warning-bg); border-color: #fde68a; }
+    .df-node.df-act   { background: #dcfce7; border-color: #86efac; }
+    .df-node.df-end   { background: var(--c-bg-subtle); border-color: var(--c-border); font-weight: 600; }
+    .df-node.df-alt   { background: var(--c-rejected-bg); border-color: #fca5a5; }
+    .df-arrow {
+      text-align: center; color: var(--c-text-faint);
+      font-size: 1.1rem; line-height: 1; margin: 0;
+    }
+    .df-node .df-label {
+      font-family: var(--mono); font-size: 0.7rem;
+      color: var(--c-text-faint); margin-right: 0.4rem; font-weight: 700;
+    }
+
+    /* ── Compare table (V3 vs prior side-by-side) ───────────────── */
+    .compare-table {
+      width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.88rem;
+    }
+    .compare-table th, .compare-table td {
+      border: 1px solid var(--c-border-soft);
+      padding: 0.55rem 0.75rem; text-align: left; vertical-align: top;
+    }
+    .compare-table th {
+      background: var(--c-bg-subtle); font-size: 0.75rem;
+      text-transform: uppercase; letter-spacing: 0.06em;
+      color: var(--c-text-muted); font-weight: 700;
+    }
+    .compare-table td.col-old { background: var(--c-rejected-bg); color: #7f1d1d; }
+    .compare-table td.col-new { background: #dcfce7; color: #14532d; }
+
+    /* ── KV grid (compact key-value layout) ─────────────────────── */
+    .kv-grid {
+      display: grid; grid-template-columns: max-content 1fr;
+      column-gap: 1rem; row-gap: 0.35rem; margin: 0.8rem 0;
+      background: var(--c-bg-subtle); padding: 0.75rem 0.9rem;
+      border-radius: 5px; border: 1px solid var(--c-border-soft);
+    }
+    .kv-grid .kv-key {
+      font-size: 0.78rem; font-weight: 700; color: var(--c-text-faint);
+      text-transform: uppercase; letter-spacing: 0.06em;
+      align-self: baseline; padding-top: 0.1rem;
+    }
+    .kv-grid .kv-val {
+      font-size: 0.9rem; color: var(--c-text); align-self: baseline;
+    }
+    .kv-grid .kv-val code { white-space: normal; }
+
+    /* ── Event trace (numbered timeline with actor tags) ────────── */
+    .event-trace {
+      list-style: none; counter-reset: trace; padding: 0; margin: 1rem 0;
+      border-left: 2px solid var(--c-accent);
+    }
+    .event-trace li {
+      counter-increment: trace;
+      padding: 0.45rem 0.7rem 0.45rem 2.2rem;
+      position: relative; font-size: 0.88rem;
+    }
+    .event-trace li::before {
+      content: counter(trace);
+      position: absolute; left: -1.05rem; top: 0.4rem;
+      width: 2rem; height: 1.7rem;
+      background: var(--c-accent); color: #fff;
+      border-radius: 3px; text-align: center; line-height: 1.7rem;
+      font-weight: 700; font-size: 0.78rem; font-family: var(--mono);
+    }
+    .event-trace li code { white-space: normal; }
+    .event-trace li .ev-actor {
+      display: inline-block; font-size: 0.7rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      padding: 0.05rem 0.4rem; border-radius: 3px;
+      margin-right: 0.4rem;
+      background: var(--c-accent-soft); color: var(--c-accent-str);
+      vertical-align: middle;
+    }
+
+    /* ── Code spec (dark-themed for tool signatures / JSON) ─────── */
+    .code-spec {
+      background: #111827; color: #e5e7eb;
+      font-family: var(--mono); font-size: 0.85rem;
+      padding: 0.85rem 1rem; border-radius: 5px;
+      overflow-x: auto; margin: 0.75rem 0; line-height: 1.5;
+    }
+    .code-spec .cs-kw  { color: #60a5fa; }
+    .code-spec .cs-fn  { color: #fbbf24; }
+    .code-spec .cs-str { color: #86efac; }
+    .code-spec .cs-num { color: #f87171; }
+    .code-spec .cs-cm  { color: #9ca3af; }
+
+    /* ── Diff block (for showing source-change diffs inline) ────── */
+    .diff-block {
+      border: 1px solid var(--c-border-soft); border-radius: 5px;
+      overflow: hidden; margin: 0.8rem 0;
+      font-family: var(--mono); font-size: 0.83rem;
+    }
+    .diff-block .diff-row {
+      display: grid; grid-template-columns: 36px 1fr;
+      border-bottom: 1px solid var(--c-border-soft);
+    }
+    .diff-block .diff-row:last-child { border-bottom: none; }
+    .diff-block .diff-sign {
+      padding: 0.4rem 0.4rem; text-align: center;
+      font-weight: 700; color: var(--c-text-faint); background: var(--c-bg-subtle);
+    }
+    .diff-block .diff-text {
+      padding: 0.4rem 0.65rem; color: var(--c-text); white-space: pre-wrap;
+    }
+    .diff-block .diff-row.del .diff-sign { background: #fee2e2; color: #991b1b; }
+    .diff-block .diff-row.del .diff-text { background: #fef2f2; color: #7f1d1d; }
+    .diff-block .diff-row.add .diff-sign { background: #dcfce7; color: #065f46; }
+    .diff-block .diff-row.add .diff-text { background: #f0fdf4; color: #14532d; }
+
+    /* ── Pointer preview (wire-format message blocks) ───────────── */
+    .pointer-preview {
+      background: #fffbeb; border: 1px dashed var(--c-warning);
+      border-radius: 5px; padding: 0.75rem 0.9rem;
+      font-family: var(--mono); font-size: 0.82rem;
+      margin: 0.75rem 0; color: #78350f; line-height: 1.55;
+    }
+    .pointer-preview .pp-tag {
+      display: inline-block; background: var(--c-warning); color: #fff;
+      font-weight: 700; padding: 0.05rem 0.4rem;
+      border-radius: 3px; font-size: 0.72rem; margin-right: 0.4rem;
+    }
+
+    /* ── Q&A block (open questions in arranger notes) ───────────── */
+    .qa-block {
+      background: var(--c-bg-elev); border: 1px solid var(--c-border);
+      border-left: 4px solid var(--c-open-q); border-radius: 0 4px 4px 0;
+      padding: 0.7rem 0.95rem; margin: 0.55rem 0;
+    }
+    .qa-block .qa-q {
+      font-weight: 700; color: var(--c-text); font-size: 0.93rem; margin-bottom: 0.25rem;
+    }
+    .qa-block .qa-q .qa-tag {
+      display: inline-block; font-size: 0.66rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.07em;
+      padding: 0.05rem 0.4rem; border-radius: 3px;
+      background: var(--c-open-q); color: #fff;
+      margin-right: 0.45rem; vertical-align: middle;
+    }
+    .qa-block .qa-a {
+      font-size: 0.86rem; color: var(--c-text-muted); line-height: 1.5;
+    }
+    .qa-block .qa-a code { white-space: normal; }
+
+    /* ── Section anchor (mini-divider for major sub-sections) ───── */
+    .sec-anchor {
+      display: flex; align-items: center; gap: 0.6rem; margin: 1.6rem 0 0.5rem;
+    }
+    .sec-anchor .sa-key {
+      font-family: var(--mono); font-size: 0.78rem; font-weight: 700;
+      color: var(--c-text-faint); background: var(--c-bg-subtle);
+      padding: 0.2rem 0.45rem; border-radius: 3px;
+      border: 1px solid var(--c-border-soft); flex-shrink: 0;
+    }
+    .sec-anchor .sa-title {
+      font-size: 1.05rem; font-weight: 700; color: var(--c-accent-str);
+    }
+    .sec-anchor .sa-rule {
+      flex: 1; height: 1px; background: var(--c-border-soft);
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     PAGE HEADER: plan title, meta, progress bar, tab nav
+     ═══════════════════════════════════════════════════════════════ -->
+<div id="page-header">
+  <div class="header-top">
+    <h1 id="plan-title">Plan Review</h1>
+    <div id="plan-meta">
+      <div class="meta-item"><strong>File:</strong> <span id="meta-file">—</span></div>
+      <div class="meta-item"><strong>Date:</strong> <span id="meta-date">—</span></div>
+      <div class="meta-item"><strong>Reviewer:</strong> <span id="meta-reviewer">—</span></div>
+    </div>
+  </div>
+
+  <div id="progress-container">
+    <div id="progress-label">0 of 8 reviewed</div>
+    <div id="progress-track">
+      <div id="progress-fill"></div>
+    </div>
+  </div>
+
+  <nav id="tab-nav" role="tablist" aria-label="Design sections">
+    <button class="tab-btn active" role="tab" aria-selected="true"
+            data-tab-key="overview"      data-state="unreviewed">Overview</button>
+    <button class="tab-btn" role="tab" aria-selected="false"
+            data-tab-key="phased-roadmap" data-state="unreviewed">Phased Roadmap</button>
+    <button class="tab-btn" role="tab" aria-selected="false"
+            data-tab-key="v1"       data-state="unreviewed">V1</button>
+    <button class="tab-btn" role="tab" aria-selected="false"
+            data-tab-key="v2"       data-state="unreviewed">V2</button>
+    <button class="tab-btn" role="tab" aria-selected="false"
+            data-tab-key="v3"       data-state="unreviewed">V3+</button>
+    <button class="tab-btn" role="tab" aria-selected="false"
+            data-tab-key="arranger-notes"       data-state="unreviewed">Arranger Notes</button>
+    <button class="tab-btn" role="tab" aria-selected="false"
+            data-tab-key="journal"       data-state="unreviewed">Journal</button>
+  </nav>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     MAIN AREA: content column + notes sidebar
+     ═══════════════════════════════════════════════════════════════ -->
+<div id="main-area">
+
+  <!-- ── Content column ──────────────────────────────────────── -->
+  <div id="content-area">
+
+    <!-- ── OVERVIEW TAB PANEL ─────────────────────────────────── -->
+    <div id="panel-overview" class="tab-panel active" role="tabpanel">
+
+      <div class="phase-content" id="overview-content">
+        <!-- INJECTION: <h1>Overview heading</h1>, overview sections per spec §4.3, no <html>/<body> wrappers -->
+        <!-- DRAMATURG_INJECT_OVERVIEW_BOUNDARY_DO_NOT_MODIFY -->
+        <div class="injection-placeholder">Overview content will be injected here by Pass 1 renderer.</div>
+      </div>
+
+      <details class="supervisor-gate">
+        <summary>Supervisor verification gate</summary>
+        <div class="gate-body">Supervisor verification items will be injected with phase content.</div>
+      </details>
+
+      <fieldset class="review-status" id="rs-overview" data-tab-key="overview">
+        <legend>Review status</legend>
+        <label class="rs-option selected" data-value="unreviewed">
+          <input type="radio" name="rs-overview" value="unreviewed" checked>
+          <span class="rs-icon">○</span> Unreviewed
+        </label>
+        <label class="rs-option" data-value="approved">
+          <input type="radio" name="rs-overview" value="approved">
+          <span class="rs-icon">✓</span> Approved
+        </label>
+        <label class="rs-option" data-value="open-questions">
+          <input type="radio" name="rs-overview" value="open-questions">
+          <span class="rs-icon">?</span> Open Questions
+        </label>
+        <label class="rs-option" data-value="needs-revision">
+          <input type="radio" name="rs-overview" value="needs-revision">
+          <span class="rs-icon">!</span> Needs Revision
+        </label>
+      </fieldset>
+    </div>
+
+    <!-- ── PHASED ROADMAP TAB PANEL ────────────────────────────── -->
+    <div id="panel-phased-roadmap" class="tab-panel" role="tabpanel">
+
+      <div class="phase-content" id="phased-roadmap-content">
+        <!-- INJECTION: <h1>Phase Summary heading</h1>, summary table/cards per spec §4.3, no <html>/<body> wrappers -->
+        <!-- DRAMATURG_INJECT_PHASED_ROADMAP_BOUNDARY_DO_NOT_MODIFY -->
+        <div class="injection-placeholder">Phased Roadmap content will be injected here by Pass 1 renderer.</div>
+      </div>
+
+      <details class="supervisor-gate">
+        <summary>Supervisor verification gate</summary>
+        <div class="gate-body">Supervisor verification items will be injected with phase content.</div>
+      </details>
+
+      <fieldset class="review-status" id="rs-phased-roadmap" data-tab-key="phased-roadmap">
+        <legend>Review status</legend>
+        <label class="rs-option selected" data-value="unreviewed">
+          <input type="radio" name="rs-phased-roadmap" value="unreviewed" checked>
+          <span class="rs-icon">○</span> Unreviewed
+        </label>
+        <label class="rs-option" data-value="approved">
+          <input type="radio" name="rs-phased-roadmap" value="approved">
+          <span class="rs-icon">✓</span> Approved
+        </label>
+        <label class="rs-option" data-value="open-questions">
+          <input type="radio" name="rs-phased-roadmap" value="open-questions">
+          <span class="rs-icon">?</span> Open Questions
+        </label>
+        <label class="rs-option" data-value="needs-revision">
+          <input type="radio" name="rs-phased-roadmap" value="needs-revision">
+          <span class="rs-icon">!</span> Needs Revision
+        </label>
+      </fieldset>
+    </div>
+
+    <!-- ── V1 TAB PANEL ───────────────────────────────────── -->
+    <div id="panel-v1" class="tab-panel" role="tabpanel">
+
+      <div class="phase-content" id="v1-content">
+        <!-- INJECTION: <h1>Phase 1 heading</h1>, Objective/Prerequisites/Implementation/Testing sections per spec §4.3, no <html>/<body> wrappers -->
+        <!-- DRAMATURG_INJECT_V1_BOUNDARY_DO_NOT_MODIFY -->
+        <div class="injection-placeholder">V1 content will be injected here by Pass 2 renderer.</div>
+      </div>
+
+      <div class="subtrack-grid" id="v1-subtracks"></div>
+
+      <details class="supervisor-gate">
+        <summary>Supervisor verification gate</summary>
+        <div class="gate-body">Supervisor verification items will be injected with phase content.</div>
+      </details>
+
+      <fieldset class="review-status" id="rs-v1" data-tab-key="v1">
+        <legend>Review status</legend>
+        <label class="rs-option selected" data-value="unreviewed">
+          <input type="radio" name="rs-v1" value="unreviewed" checked>
+          <span class="rs-icon">○</span> Unreviewed
+        </label>
+        <label class="rs-option" data-value="approved">
+          <input type="radio" name="rs-v1" value="approved">
+          <span class="rs-icon">✓</span> Approved
+        </label>
+        <label class="rs-option" data-value="open-questions">
+          <input type="radio" name="rs-v1" value="open-questions">
+          <span class="rs-icon">?</span> Open Questions
+        </label>
+        <label class="rs-option" data-value="needs-revision">
+          <input type="radio" name="rs-v1" value="needs-revision">
+          <span class="rs-icon">!</span> Needs Revision
+        </label>
+      </fieldset>
+    </div>
+
+    <!-- ── V2 TAB PANEL ───────────────────────────────────── -->
+    <div id="panel-v2" class="tab-panel" role="tabpanel">
+
+      <div class="phase-content" id="v2-content">
+        <!-- INJECTION: <h1>Phase 2 heading</h1>, Objective/Prerequisites/Implementation/Testing sections per spec §4.3, no <html>/<body> wrappers -->
+        <!-- DRAMATURG_INJECT_V2_BOUNDARY_DO_NOT_MODIFY -->
+        <div class="injection-placeholder">V2 content will be injected here by Pass 2 renderer.</div>
+      </div>
+
+      <div class="subtrack-grid" id="v2-subtracks"></div>
+
+      <details class="supervisor-gate">
+        <summary>Supervisor verification gate</summary>
+        <div class="gate-body">Supervisor verification items will be injected with phase content.</div>
+      </details>
+
+      <fieldset class="review-status" id="rs-v2" data-tab-key="v2">
+        <legend>Review status</legend>
+        <label class="rs-option selected" data-value="unreviewed">
+          <input type="radio" name="rs-v2" value="unreviewed" checked>
+          <span class="rs-icon">○</span> Unreviewed
+        </label>
+        <label class="rs-option" data-value="approved">
+          <input type="radio" name="rs-v2" value="approved">
+          <span class="rs-icon">✓</span> Approved
+        </label>
+        <label class="rs-option" data-value="open-questions">
+          <input type="radio" name="rs-v2" value="open-questions">
+          <span class="rs-icon">?</span> Open Questions
+        </label>
+        <label class="rs-option" data-value="needs-revision">
+          <input type="radio" name="rs-v2" value="needs-revision">
+          <span class="rs-icon">!</span> Needs Revision
+        </label>
+      </fieldset>
+    </div>
+
+    <!-- ── V3+ TAB PANEL ───────────────────────────────────── -->
+    <div id="panel-v3" class="tab-panel" role="tabpanel">
+
+      <div class="phase-content" id="v3-content">
+        <!-- INJECTION: <h1>Phase 3 heading</h1>, Objective/Prerequisites/Implementation/Testing sections per spec §4.3, no <html>/<body> wrappers -->
+        <!-- DRAMATURG_INJECT_V3_BOUNDARY_DO_NOT_MODIFY -->
+        <div class="injection-placeholder">V3+ content will be injected here by Pass 2 renderer.</div>
+      </div>
+
+      <div class="subtrack-grid" id="v3-subtracks"></div>
+
+      <details class="supervisor-gate">
+        <summary>Supervisor verification gate</summary>
+        <div class="gate-body">Supervisor verification items will be injected with phase content.</div>
+      </details>
+
+      <fieldset class="review-status" id="rs-v3" data-tab-key="v3">
+        <legend>Review status</legend>
+        <label class="rs-option selected" data-value="unreviewed">
+          <input type="radio" name="rs-v3" value="unreviewed" checked>
+          <span class="rs-icon">○</span> Unreviewed
+        </label>
+        <label class="rs-option" data-value="approved">
+          <input type="radio" name="rs-v3" value="approved">
+          <span class="rs-icon">✓</span> Approved
+        </label>
+        <label class="rs-option" data-value="open-questions">
+          <input type="radio" name="rs-v3" value="open-questions">
+          <span class="rs-icon">?</span> Open Questions
+        </label>
+        <label class="rs-option" data-value="needs-revision">
+          <input type="radio" name="rs-v3" value="needs-revision">
+          <span class="rs-icon">!</span> Needs Revision
+        </label>
+      </fieldset>
+    </div>
+
+    <!-- ── ARRANGER NOTES TAB PANEL ───────────────────────────────────── -->
+    <div id="panel-arranger-notes" class="tab-panel" role="tabpanel">
+
+      <div class="phase-content" id="arranger-notes-content">
+        <!-- INJECTION: <h1>Phase 4 heading</h1>, Objective/Prerequisites/Implementation/Testing sections per spec §4.3, no <html>/<body> wrappers -->
+        <!-- DRAMATURG_INJECT_ARRANGER_NOTES_BOUNDARY_DO_NOT_MODIFY -->
+        <div class="injection-placeholder">Arranger Notes content will be injected here by Pass 2 renderer.</div>
+      </div>
+
+      <div class="subtrack-grid" id="arranger-notes-subtracks"></div>
+
+      <details class="supervisor-gate">
+        <summary>Supervisor verification gate</summary>
+        <div class="gate-body">Supervisor verification items will be injected with phase content.</div>
+      </details>
+
+      <fieldset class="review-status" id="rs-arranger-notes" data-tab-key="arranger-notes">
+        <legend>Review status</legend>
+        <label class="rs-option selected" data-value="unreviewed">
+          <input type="radio" name="rs-arranger-notes" value="unreviewed" checked>
+          <span class="rs-icon">○</span> Unreviewed
+        </label>
+        <label class="rs-option" data-value="approved">
+          <input type="radio" name="rs-arranger-notes" value="approved">
+          <span class="rs-icon">✓</span> Approved
+        </label>
+        <label class="rs-option" data-value="open-questions">
+          <input type="radio" name="rs-arranger-notes" value="open-questions">
+          <span class="rs-icon">?</span> Open Questions
+        </label>
+        <label class="rs-option" data-value="needs-revision">
+          <input type="radio" name="rs-arranger-notes" value="needs-revision">
+          <span class="rs-icon">!</span> Needs Revision
+        </label>
+      </fieldset>
+    </div>
+
+    <!-- ── JOURNAL TAB PANEL ───────────────────────────────────── -->
+    <div id="panel-journal" class="tab-panel" role="tabpanel">
+
+      <div class="phase-content" id="journal-content">
+        <!-- INJECTION: <h1>Phase 5 heading</h1>, Objective/Prerequisites/Implementation/Testing sections per spec §4.3, no <html>/<body> wrappers -->
+        <!-- DRAMATURG_INJECT_JOURNAL_BOUNDARY_DO_NOT_MODIFY -->
+        <div class="injection-placeholder">Journal content will be injected here by Pass 2 renderer.</div>
+      </div>
+
+      <div class="subtrack-grid" id="journal-subtracks"></div>
+
+      <details class="supervisor-gate">
+        <summary>Supervisor verification gate</summary>
+        <div class="gate-body">Supervisor verification items will be injected with phase content.</div>
+      </details>
+
+      <fieldset class="review-status" id="rs-journal" data-tab-key="journal">
+        <legend>Review status</legend>
+        <label class="rs-option selected" data-value="unreviewed">
+          <input type="radio" name="rs-journal" value="unreviewed" checked>
+          <span class="rs-icon">○</span> Unreviewed
+        </label>
+        <label class="rs-option" data-value="approved">
+          <input type="radio" name="rs-journal" value="approved">
+          <span class="rs-icon">✓</span> Approved
+        </label>
+        <label class="rs-option" data-value="open-questions">
+          <input type="radio" name="rs-journal" value="open-questions">
+          <span class="rs-icon">?</span> Open Questions
+        </label>
+        <label class="rs-option" data-value="needs-revision">
+          <input type="radio" name="rs-journal" value="needs-revision">
+          <span class="rs-icon">!</span> Needs Revision
+        </label>
+      </fieldset>
+    </div>
+
+
+  </div><!-- /#content-area -->
+
+  <!-- ── Notes sidebar ─────────────────────────────────────────── -->
+  <aside id="notes-sidebar" aria-label="Review notes">
+
+    <div id="add-note-region">
+      <div id="note-excerpt-label">Selected: <span id="note-excerpt-text"></span></div>
+      <textarea id="note-textarea" placeholder="Add your note…" rows="3"></textarea>
+      <div class="note-actions">
+        <button class="btn-save-note" id="btn-save-note">Save</button>
+        <button class="btn-cancel-note" id="btn-cancel-note">Cancel</button>
+        <span id="save-indicator">Saved</span>
+      </div>
+    </div>
+
+    <div id="notes-list-header">Notes</div>
+    <div id="notes-list" aria-live="polite"></div>
+
+    <div id="notes-toolbar">
+      <button class="btn-notes-action" id="scroll-top-fab" aria-label="Scroll to top">↑ Top</button>
+      <button class="btn-notes-action" id="btn-export-md">Export ↗</button>
+      <button class="btn-notes-action" id="btn-download-md">Download .md</button>
+      <button class="btn-notes-action" id="btn-clear-notes">Clear all</button>
+    </div>
+
+  </aside>
+</div><!-- /#main-area -->
+
+<!-- ═══════════════════════════════════════════════════════════════
+     JAVASCRIPT — vanilla ES2020+, no external deps
+     ═══════════════════════════════════════════════════════════════ -->
+<script>
+'use strict';
+document.addEventListener('DOMContentLoaded', () => {
+
+  // ── Utilities ──────────────────────────────────────────────────
+  const byId = id => document.getElementById(id);
+
+  const planSlug = (() => {
+    const t = document.title.toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '') || 'plan';
+    return t;
+  })();
+  const notesFile = planSlug + '-notes.json';
+
+  function escapeText(s) {
+    // Returns plain text safe for textContent assignment (no HTML interpretation)
+    return String(s);
+  }
+
+  // ── Module: Persistence ────────────────────────────────────────
+  const Persistence = (() => {
+    const LS_KEY = planSlug + '-notes';
+    let useServer = true;
+    let saveTimer = null;
+    let pendingSave = null;
+
+    function showSaved() {
+      const el = byId('save-indicator');
+      el.classList.add('visible');
+      setTimeout(() => el.classList.remove('visible'), 1800);
+    }
+
+    async function serverLoad() {
+      const res = await fetch('/api/notes?file=' + encodeURIComponent(notesFile));
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    }
+
+    async function serverSave(data) {
+      const res = await fetch('/api/notes?file=' + encodeURIComponent(notesFile), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+    }
+
+    function lsLoad() {
+      try {
+        const raw = localStorage.getItem(LS_KEY);
+        return raw ? JSON.parse(raw) : null;
+      } catch { return null; }
+    }
+
+    function lsSave(data) {
+      try { localStorage.setItem(LS_KEY, JSON.stringify(data)); } catch {}
+    }
+
+    function normalise(raw) {
+      if (Array.isArray(raw)) {
+        return { schema_version: 0, notes: raw, phaseStates: {}, reviewer: '', lastUpdated: '' };
+      }
+      if (raw && typeof raw === 'object' && raw.schema_version !== undefined) return raw;
+      return { schema_version: 1, notes: [], phaseStates: {}, reviewer: '', lastUpdated: '' };
+    }
+
+    async function load() {
+      let serverData = null;
+      try {
+        const raw = await serverLoad();
+        serverData = normalise(raw);
+      } catch (e) {
+        console.warn('[Persistence] Server load failed, using localStorage:', e.message);
+        useServer = false;
+      }
+
+      if (serverData) return serverData;
+      const lsData = lsLoad();
+      if (lsData) return normalise(lsData);
+      return { schema_version: 1, notes: [], phaseStates: {}, reviewer: '', lastUpdated: '' };
+    }
+
+    async function commitSave(data) {
+      data.lastUpdated = new Date().toISOString();
+      lsSave(data);
+      if (useServer) {
+        try {
+          await serverSave(data);
+          showSaved();
+        } catch (e) {
+          console.warn('[Persistence] Server save failed, kept in localStorage:', e.message);
+          useServer = false;
+          showSaved();
+        }
+      } else {
+        showSaved();
+      }
+    }
+
+    function scheduleSave(data) {
+      pendingSave = data;
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(() => commitSave(pendingSave), 500);
+    }
+
+    return { load, scheduleSave };
+  })();
+
+  // ── Shared state ───────────────────────────────────────────────
+  let appState = {
+    schema_version: 1,
+    reviewer: '',
+    lastUpdated: '',
+    notes: [],
+    phaseStates: {}
+  };
+  let nextNoteId = 1;
+
+  // ── Module: Tabs ───────────────────────────────────────────────
+  const Tabs = (() => {
+    const TAB_KEYS = [
+      'overview', 'phased-roadmap',
+      'v1', 'v2', 'v3', 'arranger-notes', 'journal'
+    ];
+    let activeKey = 'overview';
+
+    function activate(key, pushHistory) {
+      if (pushHistory === undefined) pushHistory = true;
+      if (!TAB_KEYS.includes(key)) key = 'overview';
+      activeKey = key;
+
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        const isActive = btn.dataset.tabKey === key;
+        btn.classList.toggle('active', isActive);
+        btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      });
+
+      document.querySelectorAll('.tab-panel').forEach(panel => {
+        panel.classList.toggle('active', panel.id === ('panel-' + key));
+      });
+
+      if (pushHistory && location.hash !== ('#' + key)) {
+        history.pushState({ tab: key }, '', '#' + key);
+      }
+    }
+
+    function activateNextUnreviewed(afterKey) {
+      const idx = TAB_KEYS.indexOf(afterKey);
+      for (let i = idx + 1; i < TAB_KEYS.length; i++) {
+        const s = appState.phaseStates[TAB_KEYS[i]] || 'unreviewed';
+        if (s === 'unreviewed') { activate(TAB_KEYS[i]); return; }
+      }
+      for (let i = 0; i < idx; i++) {
+        const s = appState.phaseStates[TAB_KEYS[i]] || 'unreviewed';
+        if (s === 'unreviewed') { activate(TAB_KEYS[i]); return; }
+      }
+      // all reviewed — stay on current
+    }
+
+    function getActive() { return activeKey; }
+
+    function init() {
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => activate(btn.dataset.tabKey));
+      });
+
+      window.addEventListener('popstate', e => {
+        const key = (e.state && e.state.tab) || location.hash.slice(1) || 'overview';
+        activate(key, false);
+      });
+
+      const hashKey = location.hash.slice(1);
+      if (hashKey && TAB_KEYS.includes(hashKey)) {
+        activate(hashKey, false);
+      }
+    }
+
+    return { init, activate, activateNextUnreviewed, getActive, TAB_KEYS };
+  })();
+
+  // ── Module: ReviewStatus ───────────────────────────────────────
+  const ReviewStatus = (() => {
+    // TOTAL must equal tab count. The shipped template has 7 stub tabs.
+    // For variable-tab designs, regenerate this constant to match the rendered tab count.
+    // See READ-FIRST-rich-rendering-rules.md §4 for the full tab-count coordination rules.
+    const TOTAL = 7;
+
+    function updateProgressBar() {
+      const reviewed = Tabs.TAB_KEYS.filter(k => {
+        const s = appState.phaseStates[k] || 'unreviewed';
+        return s !== 'unreviewed';
+      }).length;
+      const pct = Math.round((reviewed / TOTAL) * 100);
+      byId('progress-label').textContent = reviewed + ' of ' + TOTAL + ' reviewed';
+      byId('progress-fill').style.width = pct + '%';
+    }
+
+    function updateTabBorder(key) {
+      const state = appState.phaseStates[key] || 'unreviewed';
+      const btn = document.querySelector('.tab-btn[data-tab-key="' + key + '"]');
+      if (btn) btn.dataset.state = state;
+    }
+
+    function applyState(key, value) {
+      const fieldset = byId('rs-' + key);
+      if (!fieldset) return;
+      fieldset.querySelectorAll('.rs-option').forEach(label => {
+        label.classList.toggle('selected', label.dataset.value === value);
+        const radio = label.querySelector('input[type="radio"]');
+        if (radio) radio.checked = (label.dataset.value === value);
+      });
+      updateTabBorder(key);
+      updateProgressBar();
+    }
+
+    function init() {
+      document.querySelectorAll('.review-status').forEach(fieldset => {
+        const key = fieldset.dataset.tabKey;
+        fieldset.querySelectorAll('.rs-option').forEach(label => {
+          label.addEventListener('click', () => {
+            const value = label.dataset.value;
+            appState.phaseStates[key] = value;
+            applyState(key, value);
+
+            label.classList.add('rs-confirm-flash');
+            setTimeout(() => label.classList.remove('rs-confirm-flash'), 620);
+
+            Persistence.scheduleSave(appState);
+
+            // "Unreviewed" is a deliberate de-marking; stay put.
+            if (value !== 'unreviewed') {
+              setTimeout(() => {
+                Tabs.activateNextUnreviewed(key);
+                window.scrollTo({ top: 0, behavior: 'auto' });
+              }, 620);
+            }
+          });
+        });
+      });
+    }
+
+    function restoreStates() {
+      Tabs.TAB_KEYS.forEach(key => {
+        const val = appState.phaseStates[key] || 'unreviewed';
+        applyState(key, val);
+      });
+      updateProgressBar();
+    }
+
+    return { init, applyState, restoreStates };
+  })();
+
+  // ── Module: Highlights (note marks in document) ────────────────
+  const Highlights = (() => {
+    function findAndWrap(note) {
+      const sectionId = note.section + '-content';
+      const container = byId(sectionId) || byId('content-area');
+      if (!container) return false;
+
+      const search = (note.anchorHint && note.anchorHint.excerptSearch)
+        ? note.anchorHint.excerptSearch
+        : note.excerpt;
+      if (!search) return false;
+
+      const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null);
+      let node;
+      while ((node = walker.nextNode())) {
+        const idx = node.textContent.indexOf(search);
+        if (idx !== -1) {
+          const before = node.textContent.slice(0, idx);
+          const matched = node.textContent.slice(idx, idx + search.length);
+          const after  = node.textContent.slice(idx + search.length);
+          const mark = document.createElement('mark');
+          mark.dataset.noteId = String(note.id);
+          mark.textContent = matched;
+
+          const parent = node.parentNode;
+          const afterNode = document.createTextNode(after);
+          parent.replaceChild(afterNode, node);
+          parent.insertBefore(mark, afterNode);
+          if (before) parent.insertBefore(document.createTextNode(before), mark);
+
+          attachMarkHover(mark, note.id);
+          return true;
+        }
+      }
+      return false;
+    }
+
+    function attachMarkHover(mark, id) {
+      mark.addEventListener('mouseenter', () => {
+        const card = document.querySelector('.note-card[data-note-id="' + id + '"]');
+        if (card) card.classList.add('highlight-hover');
+      });
+      mark.addEventListener('mouseleave', () => {
+        const card = document.querySelector('.note-card[data-note-id="' + id + '"]');
+        if (card) card.classList.remove('highlight-hover');
+      });
+      mark.addEventListener('click', () => {
+        const card = document.querySelector('.note-card[data-note-id="' + id + '"]');
+        if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+    }
+
+    return { findAndWrap, attachMarkHover };
+  })();
+
+  // ── Module: NotesPanel ─────────────────────────────────────────
+  const NotesPanel = (() => {
+    let currentSelection = null;
+    let currentSection  = null;
+    let currentAnchorHint = null;
+    let _pendingMark = null; // holds the pending-highlight <mark> until Save converts or Cancel unwraps
+    let _mouseIsDown = false; // true while any mouse button is held; gates the selectionchange debounce
+
+    function unwrapPendingMark() {
+      // Removes the pending-highlight mark, restoring text to its parent.
+      // Called on Cancel, Escape, and empty-text click-outside.
+      if (!_pendingMark) return;
+      const parent = _pendingMark.parentNode;
+      if (parent) {
+        while (_pendingMark.firstChild) {
+          parent.insertBefore(_pendingMark.firstChild, _pendingMark);
+        }
+        parent.removeChild(_pendingMark);
+        if (parent.normalize) parent.normalize();
+      }
+      _pendingMark = null;
+    }
+
+    function nearestId(node) {
+      let el = node.nodeType === Node.TEXT_NODE ? node.parentElement : node;
+      while (el && el !== document.body) {
+        if (el.id) return el.id;
+        el = el.parentElement;
+      }
+      return Tabs.getActive() + '-content';
+    }
+
+    function captureSelection() {
+      const sel = window.getSelection();
+      if (!sel || sel.rangeCount === 0 || sel.isCollapsed) { currentSelection = null; return; }
+      const text = sel.toString().trim();
+      if (!text) { currentSelection = null; return; }
+      const range = sel.getRangeAt(0);
+      const excerpt = text.slice(0, 200);
+      currentSelection = excerpt;
+      currentSection   = Tabs.getActive();
+      currentAnchorHint = {
+        nearestId: nearestId(range.startContainer),
+        excerptSearch: excerpt
+      };
+    }
+
+    function showAddNote(excerpt) {
+      const display = excerpt.length > 80 ? excerpt.slice(0, 80) + '…' : excerpt;
+      byId('note-excerpt-text').textContent = display;
+      byId('add-note-region').classList.add('visible');
+      byId('note-textarea').value = '';
+      byId('note-textarea').focus();
+    }
+
+    function hideAddNote() {
+      byId('add-note-region').classList.remove('visible');
+      currentSelection = null;
+    }
+
+    function buildNoteCard(note, orphan) {
+      // Build entirely via DOM methods — no innerHTML with user data
+      const card = document.createElement('div');
+      card.className = 'note-card';
+      card.dataset.noteId = String(note.id);
+
+      // Header row
+      const header = document.createElement('div');
+      header.className = 'note-card-header';
+
+      const badge = document.createElement('span');
+      badge.className = orphan ? 'note-badge orphan' : 'note-badge';
+      if (orphan) badge.title = 'Anchor not found in current document';
+      badge.textContent = '#' + note.id;
+
+      const sectionRef = document.createElement('span');
+      sectionRef.className = 'note-section-ref';
+      sectionRef.textContent = note.section;
+
+      const delBtn = document.createElement('button');
+      delBtn.className = 'note-delete';
+      delBtn.dataset.noteId = String(note.id);
+      delBtn.title = 'Delete note';
+      delBtn.textContent = '✕'; // ✕
+
+      header.appendChild(badge);
+      header.appendChild(sectionRef);
+      header.appendChild(delBtn);
+
+      // Excerpt
+      const excerptEl = document.createElement('div');
+      excerptEl.className = 'note-excerpt';
+      excerptEl.textContent = note.excerpt || '(no selection)';
+
+      // Note text
+      const noteTextEl = document.createElement('div');
+      noteTextEl.className = 'note-text';
+      noteTextEl.textContent = note.note;
+
+      card.appendChild(header);
+      card.appendChild(excerptEl);
+      card.appendChild(noteTextEl);
+
+      if (orphan) {
+        const orphanLabel = document.createElement('div');
+        orphanLabel.className = 'orphan-label';
+        orphanLabel.textContent = '⚠ Anchor not found — note preserved';
+        card.appendChild(orphanLabel);
+      }
+
+      return card;
+    }
+
+    function attachCardInteraction(card, note) {
+      card.addEventListener('click', e => {
+        if (e.target.closest('.note-delete')) return;
+        const mark = document.querySelector('mark[data-note-id="' + note.id + '"]');
+        if (mark) {
+          const panel = mark.closest('.tab-panel');
+          if (panel) {
+            const key = panel.id.replace('panel-', '');
+            Tabs.activate(key);
+          }
+          setTimeout(() => mark.scrollIntoView({ behavior: 'smooth', block: 'center' }), 80);
+        }
+      });
+      card.addEventListener('mouseenter', () => {
+        const mark = document.querySelector('mark[data-note-id="' + note.id + '"]');
+        if (mark) mark.classList.add('hover-accent');
+      });
+      card.addEventListener('mouseleave', () => {
+        const mark = document.querySelector('mark[data-note-id="' + note.id + '"]');
+        if (mark) mark.classList.remove('hover-accent');
+      });
+      card.querySelector('.note-delete').addEventListener('click', e => {
+        e.stopPropagation();
+        deleteNote(note.id);
+      });
+    }
+
+    function renderNoteCard(note, orphan) {
+      if (orphan === undefined) orphan = false;
+      const card = buildNoteCard(note, orphan);
+      attachCardInteraction(card, note);
+      byId('notes-list').appendChild(card);
+    }
+
+    function saveNote() {
+      const text = byId('note-textarea').value.trim();
+      if (!text && !currentSelection) { hideAddNote(); return; }
+      const excerpt     = currentSelection || '';
+      const section     = currentSection   || Tabs.getActive();
+      const anchorHint  = currentAnchorHint || { nearestId: section + '-content', excerptSearch: excerpt };
+
+      const note = {
+        id:          nextNoteId++,
+        section,
+        excerpt:     excerpt.slice(0, 200),
+        anchorHint,
+        note:        text,
+        timestamp:   new Date().toISOString()
+      };
+
+      appState.notes.push(note);
+
+      let found = false;
+      if (_pendingMark) {
+        // Convert pending-highlight mark to a saved mark in-place.
+        // No re-search needed — we already have the DOM node at the right location.
+        _pendingMark.removeAttribute('class');
+        _pendingMark.setAttribute('data-note-id', String(note.id));
+        Highlights.attachMarkHover(_pendingMark, note.id);
+        _pendingMark = null;
+        found = true;
+      } else {
+        // Defensive fallback: no pending mark (e.g. note added without selection).
+        found = Highlights.findAndWrap(note);
+      }
+      renderNoteCard(note, !found);
+
+      window.getSelection().removeAllRanges();
+      hideAddNote();
+      FloatingUI.hide();
+      Persistence.scheduleSave(appState);
+    }
+
+    function deleteNote(id) {
+      appState.notes = appState.notes.filter(n => n.id !== id);
+      const card = document.querySelector('.note-card[data-note-id="' + id + '"]');
+      if (card) card.remove();
+      const mark = document.querySelector('mark[data-note-id="' + id + '"]');
+      if (mark) {
+        const parent = mark.parentNode;
+        parent.replaceChild(document.createTextNode(mark.textContent), mark);
+        parent.normalize();
+      }
+      Persistence.scheduleSave(appState);
+    }
+
+    function notesToMarkdown() {
+      const lines = [
+        '# Review Notes — ' + document.title,
+        'Exported: ' + new Date().toISOString(),
+        ''
+      ];
+      appState.notes.forEach(n => {
+        lines.push('## Note #' + n.id + ' — ' + n.section);
+        lines.push('*' + n.timestamp + '*');
+        if (n.excerpt) lines.push('\n> ' + n.excerpt);
+        lines.push('');
+        lines.push(n.note);
+        lines.push('');
+      });
+      return lines.join('\n');
+    }
+
+    function init() {
+      byId('btn-save-note').addEventListener('click', saveNote);
+      byId('btn-cancel-note').addEventListener('click', () => {
+        window.getSelection().removeAllRanges();
+        unwrapPendingMark(); // remove pending-highlight from document
+        hideAddNote();
+        FloatingUI.hide();
+      });
+
+      byId('note-textarea').addEventListener('keydown', e => {
+        if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); saveNote(); }
+        if (e.key === 'Escape') {
+          unwrapPendingMark(); // remove pending-highlight from document
+          hideAddNote();
+          FloatingUI.hide();
+        }
+      });
+
+      // Click-outside auto-save (also tracks mouse-down state for selectionchange guard)
+      document.addEventListener('mousedown', e => {
+        _mouseIsDown = true;
+        const region = byId('add-note-region');
+        if (region.classList.contains('visible') && !region.contains(e.target)) {
+          const text = byId('note-textarea').value.trim();
+          if (text) { saveNote(); }
+          else {
+            unwrapPendingMark(); // empty note abandoned — remove pending-highlight
+            hideAddNote();
+            FloatingUI.hide();
+          }
+        }
+      });
+
+      // Selection → show sidebar input
+      //
+      // handleSelectionMaybeWrap: core wrap-and-open logic, extracted so both
+      // mouseup and the debounced selectionchange fallback can call it.
+      function handleSelectionMaybeWrap() {
+        const sel = window.getSelection();
+        if (!sel || sel.isCollapsed || !sel.toString().trim()) return;
+        if (sel.rangeCount === 0) return;
+        const range = sel.getRangeAt(0);
+        if (!byId('content-area').contains(range.commonAncestorContainer)) return;
+
+        // Guard: if the selection text equals the existing pending mark's text,
+        // mouseup-after-double-click would fire twice — skip the second time.
+        if (_pendingMark && sel.toString().trim() === _pendingMark.textContent.trim()) return;
+
+        // Capture text/anchor data before we touch the DOM.
+        captureSelection();
+        if (!currentSelection) return;
+
+        // Unwrap any prior pending mark (user made a second selection).
+        unwrapPendingMark();
+
+        // Wrap the live selection in a pending-highlight mark so it stays
+        // visible after the textarea focus steals browser selection.
+        const wrapRange = range.cloneRange();
+        const pendingMark = document.createElement('mark');
+        pendingMark.className = 'pending-highlight';
+        try {
+          wrapRange.surroundContents(pendingMark);
+        } catch (err) {
+          // Range crosses element boundaries — extract/insert fallback.
+          pendingMark.appendChild(wrapRange.extractContents());
+          wrapRange.insertNode(pendingMark);
+        }
+        _pendingMark = pendingMark;
+
+        // Clear native selection — pending mark is now the visual stand-in.
+        sel.removeAllRanges();
+
+        showAddNote(currentSelection);
+      }
+
+      // 1. Primary trigger: mouseup — fires ONCE when mouse button is released,
+      //    which is the canonical "drag-select complete" signal. The tiny defer
+      //    lets some browsers finish updating the selection object after mouseup.
+      //    We clear _mouseIsDown here (before the setTimeout) so the flag is
+      //    false by the time any downstream selectionchange debounce reads it.
+      byId('content-area').addEventListener('mouseup', () => {
+        _mouseIsDown = false;
+        setTimeout(handleSelectionMaybeWrap, 0);
+      });
+
+      // 2. Fallback for keyboard selection (shift+arrow, ctrl+a, etc.) — no
+      //    mouseup fires for keyboard, so use a debounced selectionchange.
+      //    250ms idle = user has stopped extending the selection.
+      //    The post-wrap removeAllRanges() also triggers selectionchange, but
+      //    the debounce + empty-selection guard in handleSelectionMaybeWrap
+      //    make that a no-op.
+      let _selChangeTimer = null;
+      document.addEventListener('selectionchange', () => {
+        clearTimeout(_selChangeTimer);
+        _selChangeTimer = setTimeout(() => {
+          if (_mouseIsDown) return; // mouse still held — wait for mouseup to fire instead
+          handleSelectionMaybeWrap();
+        }, 250);
+      });
+
+      // Toolbar
+      byId('btn-export-md').addEventListener('click', () => {
+        const md = notesToMarkdown();
+        navigator.clipboard.writeText(md).then(() => {
+          byId('btn-export-md').textContent = 'Copied!';
+          setTimeout(() => { byId('btn-export-md').textContent = 'Export ↗'; }, 1800);
+        }).catch(() => console.warn('[NotesPanel] Clipboard write failed'));
+      });
+
+      byId('btn-download-md').addEventListener('click', () => {
+        const md = notesToMarkdown();
+        const blob = new Blob([md], { type: 'text/markdown' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = planSlug + '-notes.md';
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 5000);
+      });
+
+      byId('btn-clear-notes').addEventListener('click', () => {
+        if (!confirm('Clear all notes AND phase review statuses? This cannot be undone.')) return;
+        // Clear notes
+        appState.notes = [];
+        byId('notes-list').textContent = '';
+        document.querySelectorAll('mark[data-note-id]').forEach(mark => {
+          const parent = mark.parentNode;
+          parent.replaceChild(document.createTextNode(mark.textContent), mark);
+          parent.normalize();
+        });
+        // Clear phaseStates — reset every tab to unreviewed
+        appState.phaseStates = {};
+        Tabs.TAB_KEYS.forEach(key => ReviewStatus.applyState(key, 'unreviewed'));
+        Persistence.scheduleSave(appState);
+      });
+    }
+
+    return {
+      init,
+      captureSelection,
+      showAddNote,
+      hideAddNote,
+      saveNote,
+      renderNoteCard,
+      getCurrentSelection: () => currentSelection
+    };
+  })();
+
+  // ── Module: FloatingUI ─────────────────────────────────────────
+  // Floating "+ Add note" button removed (Kyle 2026-05-12).
+  // Module retained as a stub so NotesPanel.saveNote / cancel can still
+  // call FloatingUI.hide() without changes.
+  const FloatingUI = (() => {
+    const fab = byId('scroll-top-fab');
+
+    function hide() { /* no-op — floating button removed */ }
+
+    function init() {
+      // Scroll-to-top button now lives in sidebar toolbar — always visible,
+      // no scroll-position visibility toggling needed.
+      fab.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
+
+    return { init, hide };
+  })();
+
+  // ── Bootstrap ─────────────────────────────────────────────────
+  async function bootstrap() {
+    Tabs.init();
+    ReviewStatus.init();
+    NotesPanel.init();
+    FloatingUI.init();
+
+    appState = await Persistence.load();
+
+    const reviewerMeta = document.querySelector('meta[name="reviewer"]');
+    if (reviewerMeta && reviewerMeta.content) appState.reviewer = reviewerMeta.content;
+    byId('meta-reviewer').textContent = appState.reviewer || '—';
+
+    nextNoteId = appState.notes.length
+      ? Math.max(...appState.notes.map(n => n.id)) + 1
+      : 1;
+
+    ReviewStatus.restoreStates();
+
+    appState.notes.forEach(note => {
+      const found = Highlights.findAndWrap(note);
+      NotesPanel.renderNoteCard(note, !found);
+    });
+  }
+
+  bootstrap().catch(e => console.error('[Bootstrap] Failed:', e));
+
+}); // end DOMContentLoaded
+</script>
+</body>
+</html>

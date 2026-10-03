@@ -1,0 +1,1 @@
+See ~/Projects/kyle-projects/skills-work/elevated-stage/arranger/docs/working/html-upgrade.md and the related directory for the overview. We will need to adapt the template and exact workings to fit Dramaturg, but this will be a big presentation upgrade for the per-phase review.
